@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Alumni SIMALSTIBA</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    .modal-backdrop {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+    
+    .table-row {
+      transition: all 0.2s ease;
+    }
+    
+    .table-row:hover {
+      background: rgba(59, 130, 246, 0.03);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .spinner {
+      border: 3px solid #e5e7eb;
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .nav-btn {
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-btn.active {
+      color: #3b82f6;
+    }
+    
+    .nav-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #3b82f6;
+      border-radius: 3px 3px 0 0;
+    }
+    
+    .search-box {
+      transition: all 0.3s ease;
+    }
+    
+    .search-box:focus {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    }
+    
+    .login-card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .whatsapp-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .whatsapp-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(37, 211, 102, 0.3);
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full min-h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+  <div class="w-full min-h-full"><!-- Main Dashboard -->
+   <div id="dashboard-page"><!-- Header -->
+    <header class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-lg">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+       <div class="text-center sm:text-left">
+        <div class="flex items-center justify-center sm:justify-start gap-3"><i class="fas fa-graduation-cap text-3xl sm:text-4xl text-white"></i>
+         <div>
+          <h1 id="site-title" class="text-xl sm:text-2xl md:text-3xl font-bold text-white">Dashboard Alumni</h1>
+          <p id="tagline" class="text-blue-100 text-xs sm:text-sm mt-1">Sistem Informasi Alumni Terpadu</p>
+         </div>
+        </div>
+       </div>
+       <div id="user-info" class="hidden">
+        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl px-4 py-2 sm:px-6 sm:py-3 text-center sm:text-right">
+         <p class="text-xs sm:text-sm text-white">Login sebagai: <span id="user-display" class="font-bold"></span></p><button onclick="logout()" class="text-xs sm:text-sm text-red-200 hover:text-white font-semibold mt-1 transition flex items-center gap-2 mx-auto sm:ml-auto sm:mr-0"> <i class="fas fa-sign-out-alt"></i> Keluar </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </header><!-- Navigation -->
+    <nav class="w-full bg-white shadow-md sticky top-0 z-40 border-b-2 border-blue-100">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex overflow-x-auto scrollbar-hide space-x-2 sm:space-x-4 md:space-x-8"><button onclick="showPage('beranda')" class="nav-btn active py-3 sm:py-4 px-3 sm:px-4 text-gray-700 hover:text-blue-600 transition font-semibold text-xs sm:text-sm whitespace-nowrap flex items-center gap-2"> <i class="fas fa-home"></i> <span>Beranda</span> </button> <button onclick="showPage('alumni')" id="nav-alumni" class="nav-btn py-3 sm:py-4 px-3 sm:px-4 text-gray-700 hover:text-blue-600 transition font-semibold text-xs sm:text-sm whitespace-nowrap flex items-center gap-2"> <i class="fas fa-users"></i> <span>Data Alumni</span> </button> <button onclick="showPage('whatsapp')" class="nav-btn py-3 sm:py-4 px-3 sm:px-4 text-gray-700 hover:text-blue-600 transition font-semibold text-xs sm:text-sm whitespace-nowrap flex items-center gap-2"> <i class="fab fa-whatsapp"></i> <span>Gabung WA</span> </button> <button onclick="showLoginOrUpdate()" id="nav-update" class="nav-btn py-3 sm:py-4 px-3 sm:px-4 text-gray-700 hover:text-blue-600 transition font-semibold text-xs sm:text-sm whitespace-nowrap flex items-center gap-2"> <i class="fas fa-edit"></i> <span>Update Data</span> </button>
+      </div>
+     </div>
+    </nav><!-- Main Content -->
+    <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8"><!-- Loading State -->
+     <div id="loading" class="text-center py-16">
+      <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
+      <p class="mt-6 text-gray-600 text-lg font-medium">Memuat data alumni...</p>
+     </div><!-- Error State -->
+     <div id="error" class="hidden bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+      <p class="text-red-600 font-semibold text-lg">Gagal memuat data alumni</p>
+      <p class="text-red-500 text-sm mt-2">Silakan coba lagi nanti</p>
+     </div><!-- Beranda Page -->
+     <div id="page-beranda" class="hidden">
+      <div class="mb-8 animate-fade-in">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Statistik Alumni</h2>
+       <p class="text-gray-600">Overview data alumni program studi</p>
+      </div><!-- Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+       <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 border-2 border-blue-400">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-blue-100 text-xs font-semibold uppercase tracking-wide">Alumni Ikhwah</p>
+          <p id="stat-male" class="text-4xl sm:text-5xl font-bold text-white mt-3">0</p>
+         </div>
+         <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-4"><i class="fas fa-male text-4xl text-white"></i>
+         </div>
+        </div>
+       </div>
+       <div class="stat-card bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl shadow-lg p-6 border-2 border-pink-400">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-pink-100 text-xs font-semibold uppercase tracking-wide">Alumni Akhwat</p>
+          <p id="stat-female" class="text-4xl sm:text-5xl font-bold text-white mt-3">0</p>
+         </div>
+         <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-4"><i class="fas fa-female text-4xl text-white"></i>
+         </div>
+        </div>
+       </div>
+       <div class="stat-card bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg p-6 border-2 border-indigo-400 sm:col-span-2 lg:col-span-1">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-indigo-100 text-xs font-semibold uppercase tracking-wide">Total Alumni</p>
+          <p id="stat-total" class="text-4xl sm:text-5xl font-bold text-white mt-3">0</p>
+         </div>
+         <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-4"><i class="fas fa-graduation-cap text-4xl text-white"></i>
+         </div>
+        </div>
+       </div>
+      </div><!-- Study Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+       <div onclick="showS2Modal()" class="stat-card bg-white rounded-2xl shadow-lg p-6 cursor-pointer border-2 border-blue-200 hover:border-blue-400 hover:shadow-xl">
+        <div class="flex items-center justify-between mb-4">
+         <div>
+          <h3 class="text-base sm:text-lg font-bold text-gray-800">Lanjut Studi S2</h3>
+          <p class="text-xs text-gray-500 mt-1">Master Program</p>
+         </div>
+         <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl p-3"><i class="fas fa-book text-2xl sm:text-3xl text-blue-600"></i>
+         </div>
+        </div>
+        <p id="stat-s2" class="text-4xl sm:text-5xl font-bold text-blue-600">0</p>
+        <div class="mt-4 flex items-center text-blue-600 font-semibold text-xs sm:text-sm"><span>Lihat Detail</span> <i class="fas fa-chevron-right ml-2"></i>
+        </div>
+       </div>
+       <div onclick="showS3Modal()" class="stat-card bg-white rounded-2xl shadow-lg p-6 cursor-pointer border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-xl">
+        <div class="flex items-center justify-between mb-4">
+         <div>
+          <h3 class="text-base sm:text-lg font-bold text-gray-800">Lanjut Studi S3</h3>
+          <p class="text-xs text-gray-500 mt-1">Doctoral Program</p>
+         </div>
+         <div class="bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-xl p-3"><i class="fas fa-user-graduate text-2xl sm:text-3xl text-indigo-600"></i>
+         </div>
+        </div>
+        <p id="stat-s3" class="text-4xl sm:text-5xl font-bold text-indigo-600">0</p>
+        <div class="mt-4 flex items-center text-indigo-600 font-semibold text-xs sm:text-sm"><span>Lihat Detail</span> <i class="fas fa-chevron-right ml-2"></i>
+        </div>
+       </div>
+      </div>
+     </div><!-- Alumni Page -->
+     <div id="page-alumni" class="hidden animate-fade-in">
+      <div class="mb-8">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Data Alumni</h2>
+       <p class="text-gray-600">Daftar lengkap alumni program studi</p>
+      </div><!-- Search -->
+      <div class="bg-white rounded-2xl shadow-lg p-4 mb-6 border-2 border-blue-100">
+       <div class="relative"><i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i> <input type="text" id="search-alumni" placeholder="Cari berdasarkan nama atau NIM..." class="search-box w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 text-sm sm:text-base" oninput="filterAlumni()">
+       </div>
+      </div><!-- Table -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-gray-100">
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead class="bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 text-white">
+          <tr>
+           <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold uppercase tracking-wide"><i class="fas fa-id-card mr-1"></i> NIM</th>
+           <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold uppercase tracking-wide"><i class="fas fa-user mr-1"></i> Nama</th>
+           <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold uppercase tracking-wide hidden sm:table-cell"><i class="fas fa-map-marker-alt mr-1"></i> Domisili</th>
+           <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold uppercase tracking-wide hidden md:table-cell"><i class="fas fa-door-open mr-1"></i> Thn Masuk</th>
+           <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold uppercase tracking-wide hidden lg:table-cell"><i class="fas fa-door-closed mr-1"></i> Thn Keluar</th>
+          </tr>
+         </thead>
+         <tbody id="alumni-table-body" class="divide-y divide-gray-100">
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div><!-- WhatsApp Page -->
+     <div id="page-whatsapp" class="hidden animate-fade-in">
+      <div class="mb-8">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Gabung Group WhatsApp Alumni</h2>
+       <p class="text-gray-600">Klik tombol di bawah untuk bergabung dengan group WhatsApp alumni</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><!-- Group Ikhwah -->
+       <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-xl p-6 sm:p-8 border-2 border-blue-200 text-center">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg"><i class="fas fa-users text-3xl text-white"></i>
+        </div>
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Group Alumni Ikhwah</h3>
+        <p class="text-xs sm:text-sm text-gray-600 mb-6">Untuk alumni laki-laki</p><a id="wa-ikhwah-btn" href="https://wa.me/628123456789?text=Assalamu%27alaikum%2C%20saya%20ingin%20bergabung%20dengan%20group%20alumni%20ikhwah" target="_blank" rel="noopener noreferrer" class="whatsapp-btn inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition shadow-lg text-sm sm:text-base"> <i class="fab fa-whatsapp text-xl mr-2"></i> Chat Admin untuk Gabung </a>
+       </div><!-- Group Akhwat -->
+       <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl shadow-xl p-6 sm:p-8 border-2 border-pink-200 text-center">
+        <div class="bg-gradient-to-br from-pink-500 to-pink-600 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg"><i class="fas fa-users text-3xl text-white"></i>
+        </div>
+        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Group Alumni Akhwat</h3>
+        <p class="text-xs sm:text-sm text-gray-600 mb-6">Untuk alumni perempuan</p><a id="wa-akhwat-btn" href="https://wa.me/628987654321?text=Assalamu%27alaikum%2C%20saya%20ingin%20bergabung%20dengan%20group%20alumni%20akhwat" target="_blank" rel="noopener noreferrer" class="whatsapp-btn inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition shadow-lg text-sm sm:text-base"> <i class="fab fa-whatsapp text-xl mr-2"></i> Chat Admin untuk Gabung </a>
+       </div>
+      </div>
+     </div><!-- Update Page -->
+     <div id="page-update" class="hidden animate-fade-in">
+      <div class="mb-8">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Update Data Saya</h2>
+       <p class="text-gray-600">Perbarui informasi data pribadi Anda</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-md p-8 border border-gray-100">
+       <form id="update-form" onsubmit="saveUpdate(event)" class="space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">NIM</label> <input type="text" id="update-nim" readonly class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+         </div>
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label> <input type="text" id="update-nama" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Lahir</label> <input type="text" id="update-tanggal-lahir" placeholder="DD/MM/YYYY atau DDMMYYYY" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p class="text-xs text-gray-500 mt-1">Contoh: 03/09/1999 atau 03091999</p>
+         </div>
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Asal Daerah</label> <input type="text" id="update-asal" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+         </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">No. WhatsApp</label> <input type="text" id="update-wa" placeholder="628123456789" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+         </div>
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Lanjut Studi (S2/S3)</label> <input type="text" id="update-studi" placeholder="Contoh: S2" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+         </div>
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Universitas Lanjutan</label> <input type="text" id="update-univ" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Program Studi Lanjutan</label> <input type="text" id="update-prodi" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="flex justify-end space-x-4 pt-4"><button type="submit" id="update-btn" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition shadow-lg hover:shadow-xl flex items-center"> <span id="update-text">Simpan Perubahan</span>
+          <div id="update-spinner" class="spinner ml-2 hidden"></div></button>
+        </div>
+       </form>
+      </div>
+     </div><!-- Admin Update Page -->
+     <div id="page-admin-update" class="hidden animate-fade-in">
+      <div class="mb-8">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Update Data Alumni (Admin)</h2>
+       <p class="text-gray-600">Edit data semua alumni</p>
+      </div><!-- Search -->
+      <div class="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100"><input type="text" id="search-admin-update" placeholder="🔍 Cari berdasarkan nama atau NIM..." class="search-box w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="filterAdminUpdate()">
+      </div><!-- Table -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+          <tr>
+           <th class="px-6 py-4 text-left text-xs font-bold uppercase">NIM</th>
+           <th class="px-6 py-4 text-left text-xs font-bold uppercase">Nama</th>
+           <th class="px-6 py-4 text-left text-xs font-bold uppercase">Aksi</th>
+          </tr>
+         </thead>
+         <tbody id="admin-update-table-body" class="divide-y divide-gray-100">
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- S2 Modal -->
+   <div id="s2-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="modal-backdrop fixed inset-0" onclick="closeS2Modal()"></div>
+    <div class="flex items-center justify-center min-h-full p-4">
+     <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full relative z-10 animate-fade-in border border-gray-100">
+      <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-6 rounded-t-2xl flex items-center justify-between">
+       <div>
+        <h3 class="text-2xl font-bold">📚 Alumni Lanjut Studi S2</h3>
+        <p class="text-blue-100 text-sm mt-1">Master Program</p>
+       </div><button onclick="closeS2Modal()" class="text-white hover:text-gray-200 text-3xl font-bold">×</button>
+      </div>
+      <div class="p-8 max-h-96 overflow-y-auto">
+       <div id="s2-list" class="space-y-4"></div>
+      </div>
+     </div>
+    </div>
+   </div><!-- S3 Modal -->
+   <div id="s3-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="modal-backdrop fixed inset-0" onclick="closeS3Modal()"></div>
+    <div class="flex items-center justify-center min-h-full p-4">
+     <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full relative z-10 animate-fade-in border border-gray-100">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-6 rounded-t-2xl flex items-center justify-between">
+       <div>
+        <h3 class="text-2xl font-bold">🎯 Alumni Lanjut Studi S3</h3>
+        <p class="text-indigo-100 text-sm mt-1">Doctoral Program</p>
+       </div><button onclick="closeS3Modal()" class="text-white hover:text-gray-200 text-3xl font-bold">×</button>
+      </div>
+      <div class="p-8 max-h-96 overflow-y-auto">
+       <div id="s3-list" class="space-y-4"></div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Login Modal -->
+   <div id="login-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="modal-backdrop fixed inset-0" onclick="closeLoginModal()"></div>
+    <div class="flex items-center justify-center min-h-full p-4">
+     <div class="login-card w-full max-w-md rounded-3xl shadow-2xl p-6 sm:p-8 border-2 border-blue-200 relative z-10 animate-fade-in"><button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"> <i class="fas fa-times text-2xl"></i> </button>
+      <div class="text-center mb-6 sm:mb-8">
+       <div class="w-20 h-20 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-3xl mx-auto mb-4 flex items-center justify-center shadow-xl"><i class="fas fa-lock text-4xl text-white"></i>
+       </div>
+       <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Login untuk Update Data</h1>
+       <p class="text-gray-600 text-xs sm:text-sm">Masuk untuk mengupdate data alumni Anda</p>
+      </div>
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+       <div><label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2"> <i class="fas fa-user mr-1"></i> NIM </label> <input type="text" id="login-username" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 text-sm sm:text-base" placeholder="Masukkan NIM Anda">
+       </div>
+       <div><label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-2"> <i class="fas fa-key mr-1"></i> Password </label>
+        <div class="relative"><input type="password" id="login-password" required class="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 text-sm sm:text-base" placeholder="Masukkan NIM Anda"> <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"> <i id="password-icon" class="fas fa-eye text-lg"></i> </button>
+        </div>
+       </div>
+       <div id="login-error" class="hidden bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-xl text-xs sm:text-sm flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> <span></span>
+       </div><button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 text-white py-3 sm:py-4 rounded-xl font-bold hover:from-blue-600 hover:via-indigo-700 hover:to-purple-700 transition shadow-lg hover:shadow-xl text-sm sm:text-base"> <i class="fas fa-sign-in-alt mr-2"></i> Masuk </button>
+      </form>
+      <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+       <p class="text-xs text-gray-700 text-center leading-relaxed"><i class="fas fa-info-circle text-blue-600 mr-1"></i><br><strong>Gunakan NIM Anda untuk username dan password</strong></p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Edit Modal (Admin) -->
+   <div id="edit-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="modal-backdrop fixed inset-0" onclick="closeEditModal()"></div>
+    <div class="flex items-center justify-center min-h-full p-4">
+     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full relative z-10 animate-fade-in border border-gray-100">
+      <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-6 rounded-t-2xl flex items-center justify-between">
+       <div>
+        <h3 class="text-2xl font-bold">✏ Edit Data Alumni</h3>
+        <p class="text-blue-100 text-sm mt-1">Perbarui informasi alumni</p>
+       </div><button onclick="closeEditModal()" class="text-white hover:text-gray-200 text-3xl font-bold">×</button>
+      </div>
+      <form id="edit-form" onsubmit="saveEdit(event)" class="p-8">
+       <div class="space-y-5">
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">NIM</label> <input type="text" id="edit-nim" readonly class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label> <input type="text" id="edit-nama" required class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Asal Daerah</label> <input type="text" id="edit-asal" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Kelamin</label> <input type="text" id="edit-kelamin" readonly class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+         </div>
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">No. WhatsApp</label> <input type="text" id="edit-wa" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+         </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Tahun Masuk</label> <input type="text" id="edit-masuk" readonly class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+         </div>
+         <div><label class="block text-sm font-semibold text-gray-700 mb-2">Tahun Keluar</label> <input type="text" id="edit-keluar" readonly class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+         </div>
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Lanjut Studi (S2/S3)</label> <input type="text" id="edit-studi" placeholder="Contoh: S2" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Universitas Lanjutan</label> <input type="text" id="edit-univ" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-2">Program Studi Lanjutan</label> <input type="text" id="edit-prodi" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+       </div>
+       <div class="flex justify-end space-x-4 mt-8"><button type="button" onclick="closeEditModal()" class="px-8 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-semibold"> Batal </button> <button type="submit" id="save-btn" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition shadow-lg flex items-center"> <span id="save-text">Simpan</span>
+         <div id="save-spinner" class="spinner ml-2 hidden"></div></button>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxGbcF-XJTcJB7_8x9BWej4bz2etU4k_FfebdNK3d1oOfACd1bTRuRJqBKOLNQhQBTa/exec';
+    const ADMIN_PASSWORD = 'admin123';
+    
+    let alumniData = [];
+    let currentUser = null;
+    let currentUserData = null;
+    let isAdmin = false;
+    let currentEditIndex = -1;
+
+    const defaultConfig = {
+      site_title: "Dashboard Alumni",
+      tagline: "Sistem Informasi Alumni Terpadu",
+      admin_whatsapp_ikhwah: "628123456789",
+      admin_whatsapp_akhwat: "628987654321",
+      background_color: "#f0f9ff",
+      surface_color: "#ffffff",
+      text_color: "#1f2937",
+      primary_color: "#3b82f6",
+      secondary_color: "#6366f1"
+    };
+
+    async function onConfigChange(config) {
+      document.getElementById('site-title').textContent = '🎓 ' + (config.site_title || defaultConfig.site_title);
+      document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+      
+      const waIkhwah = config.admin_whatsapp_ikhwah || defaultConfig.admin_whatsapp_ikhwah;
+      const waAkhwat = config.admin_whatsapp_akhwat || defaultConfig.admin_whatsapp_akhwat;
+      
+      document.getElementById('wa-ikhwah-btn').href = https://wa.me/${waIkhwah}?text=Assalamu%27alaikum%2C%20saya%20ingin%20bergabung%20dengan%20group%20alumni%20ikhwah;
+      document.getElementById('wa-akhwat-btn').href = https://wa.me/${waAkhwat}?text=Assalamu%27alaikum%2C%20saya%20ingin%20bergabung%20dengan%20group%20alumni%20akhwat;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      
+      document.body.style.background = linear-gradient(to bottom right, ${bgColor}, ${surfaceColor});
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+                config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => {
+                config.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["site_title", config.site_title || defaultConfig.site_title],
+          ["tagline", config.tagline || defaultConfig.tagline],
+          ["admin_whatsapp_ikhwah", config.admin_whatsapp_ikhwah || defaultConfig.admin_whatsapp_ikhwah],
+          ["admin_whatsapp_akhwat", config.admin_whatsapp_akhwat || defaultConfig.admin_whatsapp_akhwat]
+        ])
+      });
+    }
+
+    function showLoginOrUpdate() {
+      if (currentUser) {
+        if (isAdmin) {
+          showPage('admin-update');
+        } else {
+          showPage('update');
+        }
+      } else {
+        document.getElementById('login-modal').classList.remove('hidden');
+      }
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-error').classList.add('hidden');
+      
+      // Reset password visibility
+      const passwordInput = document.getElementById('login-password');
+      const passwordIcon = document.getElementById('password-icon');
+      passwordInput.type = 'password';
+      passwordIcon.classList.remove('fa-eye-slash');
+      passwordIcon.classList.add('fa-eye');
+    }
+
+    function togglePassword() {
+      const passwordInput = document.getElementById('login-password');
+      const passwordIcon = document.getElementById('password-icon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordIcon.classList.remove('fa-eye');
+        passwordIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        passwordIcon.classList.remove('fa-eye-slash');
+        passwordIcon.classList.add('fa-eye');
+      }
+    }
+
+    function formatDateDisplay(dateStr) {
+      if (!dateStr) return '-';
+      
+      // Jika sudah dalam format DD/MM/YYYY, kembalikan langsung
+      if (dateStr.includes('/')) {
+        return dateStr;
+      }
+      
+      // Jika format DDMMYYYY (8 digit angka), konversi ke DD/MM/YYYY
+      if (dateStr.length === 8) {
+        return ${dateStr.substring(0, 2)}/${dateStr.substring(2, 4)}/${dateStr.substring(4, 8)};
+      }
+      
+      return dateStr;
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const loginError = document.getElementById('login-error');
+      
+      loginError.classList.add('hidden');
+      
+      // Check admin login
+      if (username.toLowerCase() === 'admin' && password === ADMIN_PASSWORD) {
+        isAdmin = true;
+        currentUser = 'Admin';
+        
+        document.getElementById('user-display').textContent = 'Admin';
+        document.getElementById('user-info').classList.remove('hidden');
+        
+        closeLoginModal();
+        showPage('admin-update');
+        
+        return;
+      }
+      
+      // Find user data by NIM as username
+      const userData = alumniData.find(a => (a['NIM'] || '').toString().trim() === username);
+      
+      if (!userData) {
+        loginError.querySelector('span').textContent = '❌ NIM tidak ditemukan: ' + username;
+        loginError.classList.remove('hidden');
+        return;
+      }
+      
+      // Check if password (NIM) matches username
+      if (username !== password) {
+        loginError.querySelector('span').innerHTML = ❌ Password salah!<br><strong>Gunakan NIM yang sama untuk password</strong>;
+        loginError.classList.remove('hidden');
+        return;
+      }
+      
+      // Login successful
+      currentUser = username;
+      currentUserData = userData;
+      isAdmin = false;
+      
+      document.getElementById('user-display').textContent = userData['NAMA'];
+      document.getElementById('user-info').classList.remove('hidden');
+      
+      populateUpdateForm();
+      closeLoginModal();
+      showPage('update');
+    }
+
+    function logout() {
+      currentUser = null;
+      currentUserData = null;
+      isAdmin = false;
+      
+      document.getElementById('user-info').classList.add('hidden');
+      
+      showPage('beranda');
+      
+      showToast('✅ Berhasil keluar', 'success');
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch(APPS_SCRIPT_URL + '?action=read', {
+          method: 'GET',
+          redirect: 'follow'
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          alumniData = result.data;
+          
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('error').classList.add('hidden');
+          document.getElementById('page-beranda').classList.remove('hidden');
+          
+          updateStats();
+          renderAlumniTable();
+          renderAdminUpdateTable();
+        } else {
+          throw new Error(result.message || 'Gagal memuat data');
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('error').classList.remove('hidden');
+      }
+    }
+    
+    loadData();
+
+    function updateStats() {
+      const males = alumniData.filter(a => {
+        const gender = (a['JENIS KELAMIN'] || '').toString().toUpperCase();
+        return gender === 'L' || gender === 'LAKI-LAKI';
+      }).length;
+      
+      const females = alumniData.filter(a => {
+        const gender = (a['JENIS KELAMIN'] || '').toString().toUpperCase();
+        return gender === 'P' || gender === 'PEREMPUAN';
+      }).length;
+      
+      const s2 = alumniData.filter(a => {
+        const studi = (a['LANJUT STUDI (S2/S3)'] || '').toString().toUpperCase();
+        return studi.includes('S2');
+      }).length;
+      
+      const s3 = alumniData.filter(a => {
+        const studi = (a['LANJUT STUDI (S2/S3)'] || '').toString().toUpperCase();
+        return studi.includes('S3');
+      }).length;
+      
+      document.getElementById('stat-male').textContent = males;
+      document.getElementById('stat-female').textContent = females;
+      document.getElementById('stat-total').textContent = alumniData.length;
+      document.getElementById('stat-s2').textContent = s2;
+      document.getElementById('stat-s3').textContent = s3;
+    }
+
+    function renderAlumniTable() {
+      const tbody = document.getElementById('alumni-table-body');
+      tbody.innerHTML = '';
+      
+      alumniData.forEach(alumni => {
+        const row = document.createElement('tr');
+        row.className = 'table-row';
+        row.innerHTML = `
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700 font-semibold">${alumni['NIM'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-bold text-gray-900">${alumni['NAMA'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 hidden sm:table-cell">${alumni['ASAL DAERAH'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 hidden md:table-cell">${alumni['TAHUN MASUK'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 hidden lg:table-cell">${alumni['TAHUN KELUAR'] || '-'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterAlumni() {
+      const search = document.getElementById('search-alumni').value.toLowerCase();
+      const tbody = document.getElementById('alumni-table-body');
+      tbody.innerHTML = '';
+      
+      const filtered = alumniData.filter(a => 
+        ((a['NAMA'] || '').toString().toLowerCase().includes(search)) ||
+        ((a['NIM'] || '').toString().toLowerCase().includes(search))
+      );
+      
+      filtered.forEach(alumni => {
+        const row = document.createElement('tr');
+        row.className = 'table-row';
+        row.innerHTML = `
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700 font-semibold">${alumni['NIM'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-bold text-gray-900">${alumni['NAMA'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 hidden sm:table-cell">${alumni['ASAL DAERAH'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 hidden md:table-cell">${alumni['TAHUN MASUK'] || '-'}</td>
+          <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600 hidden lg:table-cell">${alumni['TAHUN KELUAR'] || '-'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderAdminUpdateTable() {
+      const tbody = document.getElementById('admin-update-table-body');
+      tbody.innerHTML = '';
+      
+      alumniData.forEach((alumni, index) => {
+        const row = document.createElement('tr');
+        row.className = 'table-row';
+        row.innerHTML = `
+          <td class="px-6 py-4 text-sm text-gray-700 font-semibold">${alumni['NIM'] || '-'}</td>
+          <td class="px-6 py-4 text-sm font-bold text-gray-900">${alumni['NAMA'] || '-'}</td>
+          <td class="px-6 py-4 text-sm">
+            <button onclick="openEditModal(${index})" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition text-sm font-semibold shadow-md">
+              ✏ Edit
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterAdminUpdate() {
+      const search = document.getElementById('search-admin-update').value.toLowerCase();
+      const tbody = document.getElementById('admin-update-table-body');
+      tbody.innerHTML = '';
+      
+      alumniData.forEach((alumni, index) => {
+        const matches = ((alumni['NAMA'] || '').toString().toLowerCase().includes(search)) ||
+                       ((alumni['NIM'] || '').toString().toLowerCase().includes(search));
+        
+        if (matches) {
+          const row = document.createElement('tr');
+          row.className = 'table-row';
+          row.innerHTML = `
+            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">${alumni['NIM'] || '-'}</td>
+            <td class="px-6 py-4 text-sm font-bold text-gray-900">${alumni['NAMA'] || '-'}</td>
+            <td class="px-6 py-4 text-sm">
+              <button onclick="openEditModal(${index})" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition text-sm font-semibold shadow-md">
+                ✏ Edit
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        }
+      });
+    }
+
+    function populateUpdateForm() {
+      if (!currentUserData) return;
+      
+      document.getElementById('update-nim').value = currentUserData['NIM'] || '';
+      document.getElementById('update-nama').value = currentUserData['NAMA'] || '';
+      
+      // Data tanggal lahir dari Google Apps Script sudah dalam format yang bersih
+      const birthDate = (currentUserData['TANGGAL LAHIR'] || '').toString().trim();
+      const formattedBirthDate = formatDateDisplay(birthDate);
+      document.getElementById('update-tanggal-lahir').value = formattedBirthDate;
+      
+      document.getElementById('update-asal').value = currentUserData['ASAL DAERAH'] || '';
+      document.getElementById('update-wa').value = currentUserData['NO. WHATSAPP'] || '';
+      document.getElementById('update-studi').value = currentUserData['LANJUT STUDI (S2/S3)'] || '';
+      document.getElementById('update-univ').value = currentUserData['UNIVERSITAS LANJUTAN'] || '';
+      document.getElementById('update-prodi').value = currentUserData['PROGRAM STUDI LANJUTAN'] || '';
+    }
+
+    async function saveUpdate(event) {
+      event.preventDefault();
+      
+      const updateBtn = document.getElementById('update-btn');
+      const updateText = document.getElementById('update-text');
+      const updateSpinner = document.getElementById('update-spinner');
+      
+      updateBtn.disabled = true;
+      updateText.textContent = 'Menyimpan...';
+      updateSpinner.classList.remove('hidden');
+      
+      const nim = document.getElementById('update-nim').value;
+      const nama = document.getElementById('update-nama').value;
+      const tanggalLahir = document.getElementById('update-tanggal-lahir').value;
+      const asalDaerah = document.getElementById('update-asal').value;
+      const noWa = document.getElementById('update-wa').value;
+      const lanjutStudi = document.getElementById('update-studi').value;
+      const universitasLanjutan = document.getElementById('update-univ').value;
+      const prodiLanjutan = document.getElementById('update-prodi').value;
+      
+      const formData = new FormData();
+      formData.append('action', 'update');
+      formData.append('nim', nim);
+      formData.append('nama', nama);
+      formData.append('tanggal_lahir', tanggalLahir);
+      formData.append('asal_daerah', asalDaerah);
+      formData.append('no_wa', noWa);
+      formData.append('lanjut_studi', lanjutStudi);
+      formData.append('universitas_lanjutan', universitasLanjutan);
+      formData.append('prodi_lanjutan', prodiLanjutan);
+      
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          currentUserData['NAMA'] = nama;
+          currentUserData['TANGGAL LAHIR'] = tanggalLahir;
+          currentUserData['ASAL DAERAH'] = asalDaerah;
+          currentUserData['NO. WHATSAPP'] = noWa;
+          currentUserData['LANJUT STUDI (S2/S3)'] = lanjutStudi;
+          currentUserData['UNIVERSITAS LANJUTAN'] = universitasLanjutan;
+          currentUserData['PROGRAM STUDI LANJUTAN'] = prodiLanjutan;
+          
+          await loadData();
+          
+          showToast('✅ Data berhasil diperbarui!', 'success');
+        } else {
+          showToast('❌ Gagal menyimpan: ' + result.message, 'error');
+        }
+      } catch (error) {
+        showToast('❌ Gagal menyimpan data', 'error');
+      } finally {
+        updateBtn.disabled = false;
+        updateText.textContent = 'Simpan Perubahan';
+        updateSpinner.classList.add('hidden');
+      }
+    }
+
+    function showPage(page) {
+      document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+      document.getElementById(page-${page}).classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      event.target.classList.add('active');
+    }
+
+    function showS2Modal() {
+      const s2Alumni = alumniData.filter(a => {
+        const studi = (a['LANJUT STUDI (S2/S3)'] || '').toString().toUpperCase();
+        return studi.includes('S2');
+      });
+      
+      const list = document.getElementById('s2-list');
+      list.innerHTML = '';
+      
+      s2Alumni.forEach(alumni => {
+        const div = document.createElement('div');
+        div.className = 'p-5 bg-blue-50 rounded-xl border border-blue-100';
+        div.innerHTML = `
+          <p class="font-bold text-lg text-gray-900">${alumni['NAMA']}</p>
+          <p class="text-sm text-gray-600 mt-2"><span class="font-semibold">NIM:</span> ${alumni['NIM'] || '-'}</p>
+          <p class="text-sm text-gray-600"><span class="font-semibold">Universitas:</span> ${alumni['UNIVERSITAS LANJUTAN'] || '-'}</p>
+          <p class="text-sm text-gray-600"><span class="font-semibold">Program Studi:</span> ${alumni['PROGRAM STUDI LANJUTAN'] || '-'}</p>
+        `;
+        list.appendChild(div);
+      });
+      
+      document.getElementById('s2-modal').classList.remove('hidden');
+    }
+
+    function closeS2Modal() {
+      document.getElementById('s2-modal').classList.add('hidden');
+    }
+
+    function showS3Modal() {
+      const s3Alumni = alumniData.filter(a => {
+        const studi = (a['LANJUT STUDI (S2/S3)'] || '').toString().toUpperCase();
+        return studi.includes('S3');
+      });
+      
+      const list = document.getElementById('s3-list');
+      list.innerHTML = '';
+      
+      s3Alumni.forEach(alumni => {
+        const div = document.createElement('div');
+        div.className = 'p-5 bg-indigo-50 rounded-xl border border-indigo-100';
+        div.innerHTML = `
+          <p class="font-bold text-lg text-gray-900">${alumni['NAMA']}</p>
+          <p class="text-sm text-gray-600 mt-2"><span class="font-semibold">NIM:</span> ${alumni['NIM'] || '-'}</p>
+          <p class="text-sm text-gray-600"><span class="font-semibold">Universitas:</span> ${alumni['UNIVERSITAS LANJUTAN'] || '-'}</p>
+          <p class="text-sm text-gray-600"><span class="font-semibold">Program Studi:</span> ${alumni['PROGRAM STUDI LANJUTAN'] || '-'}</p>
+        `;
+        list.appendChild(div);
+      });
+      
+      document.getElementById('s3-modal').classList.remove('hidden');
+    }
+
+    function closeS3Modal() {
+      document.getElementById('s3-modal').classList.add('hidden');
+    }
+
+    function openEditModal(index) {
+      currentEditIndex = index;
+      const alumni = alumniData[index];
+      
+      document.getElementById('edit-nim').value = alumni['NIM'] || '';
+      document.getElementById('edit-nama').value = alumni['NAMA'] || '';
+      document.getElementById('edit-asal').value = alumni['ASAL DAERAH'] || '';
+      document.getElementById('edit-kelamin').value = alumni['JENIS KELAMIN'] || '';
+      document.getElementById('edit-masuk').value = alumni['TAHUN MASUK'] || '';
+      document.getElementById('edit-keluar').value = alumni['TAHUN KELUAR'] || '';
+      document.getElementById('edit-wa').value = alumni['NO. WHATSAPP'] || '';
+      document.getElementById('edit-studi').value = alumni['LANJUT STUDI (S2/S3)'] || '';
+      document.getElementById('edit-univ').value = alumni['UNIVERSITAS LANJUTAN'] || '';
+      document.getElementById('edit-prodi').value = alumni['PROGRAM STUDI LANJUTAN'] || '';
+      
+      document.getElementById('edit-modal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.add('hidden');
+      currentEditIndex = -1;
+    }
+
+    async function saveEdit(event) {
+      event.preventDefault();
+      
+      if (currentEditIndex === -1) return;
+      
+      const saveBtn = document.getElementById('save-btn');
+      const saveText = document.getElementById('save-text');
+      const saveSpinner = document.getElementById('save-spinner');
+      
+      saveBtn.disabled = true;
+      saveText.textContent = 'Menyimpan...';
+      saveSpinner.classList.remove('hidden');
+      
+      const nim = document.getElementById('edit-nim').value;
+      const nama = document.getElementById('edit-nama').value;
+      const asalDaerah = document.getElementById('edit-asal').value;
+      const noWa = document.getElementById('edit-wa').value;
+      const lanjutStudi = document.getElementById('edit-studi').value;
+      const universitasLanjutan = document.getElementById('edit-univ').value;
+      const prodiLanjutan = document.getElementById('edit-prodi').value;
+      
+      const formData = new FormData();
+      formData.append('action', 'update');
+      formData.append('nim', nim);
+      formData.append('nama', nama);
+      formData.append('asal_daerah', asalDaerah);
+      formData.append('no_wa', noWa);
+      formData.append('lanjut_studi', lanjutStudi);
+      formData.append('universitas_lanjutan', universitasLanjutan);
+      formData.append('prodi_lanjutan', prodiLanjutan);
+      
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          alumniData[currentEditIndex]['NAMA'] = nama;
+          alumniData[currentEditIndex]['ASAL DAERAH'] = asalDaerah;
+          alumniData[currentEditIndex]['NO. WHATSAPP'] = noWa;
+          alumniData[currentEditIndex]['LANJUT STUDI (S2/S3)'] = lanjutStudi;
+          alumniData[currentEditIndex]['UNIVERSITAS LANJUTAN'] = universitasLanjutan;
+          alumniData[currentEditIndex]['PROGRAM STUDI LANJUTAN'] = prodiLanjutan;
+          
+          updateStats();
+          renderAlumniTable();
+          renderAdminUpdateTable();
+          
+          closeEditModal();
+          
+          showToast('✅ Data berhasil diperbarui!', 'success');
+        } else {
+          showToast('❌ Gagal menyimpan: ' + result.message, 'error');
+        }
+      } catch (error) {
+        showToast('❌ Gagal menyimpan data', 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveText.textContent = 'Simpan';
+        saveSpinner.classList.add('hidden');
+      }
+    }
+
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600';
+      toast.className = fixed top-6 right-6 bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl z-50 animate-fade-in font-semibold;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a395ef18150f58c',t:'MTc2Mzk5MjE3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
