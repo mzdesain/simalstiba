@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIMALSTIBA</title>
+  <title>Dashboard Alumni SIMALSTIBA</title>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
@@ -216,7 +216,7 @@
                         <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
                              <i class="fas fa-book text-xl"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-white text-blue-700 px-3 py-1 rounded-full uppercase tracking-wide">175</span>
+                        <span class="text-[10px] font-bold bg-white text-blue-700 px-3 py-1 rounded-full uppercase tracking-wide">Magister</span>
                     </div>
                     <h3 class="text-xl font-bold relative z-10">Data Alumni S2</h3>
                     <p class="text-blue-100 text-sm mb-6 relative z-10 opacity-90">Daftar alumni yang melanjutkan studi S2.</p>
@@ -231,7 +231,7 @@
                         <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
                              <i class="fas fa-user-graduate text-xl"></i>
                         </div>
-                        <span class="text-[10px] font-bold bg-white text-indigo-700 px-3 py-1 rounded-full uppercase tracking-wide">10</span>
+                        <span class="text-[10px] font-bold bg-white text-indigo-700 px-3 py-1 rounded-full uppercase tracking-wide">Doctoral</span>
                     </div>
                     <h3 class="text-xl font-bold relative z-10">Data Alumni S3</h3>
                     <p class="text-indigo-100 text-sm mb-6 relative z-10 opacity-90">Daftar alumni yang melanjutkan studi S3.</p>
@@ -267,8 +267,7 @@
                                 <th class="px-6 py-4">Lulus</th>
                             </tr>
                         </thead>
-                        <tbody id="alumni-table-body" class="divide-y divide-gray-100 text-gray-700">
-                            </tbody>
+                        <tbody id="alumni-table-body" class="divide-y divide-gray-100 text-gray-700"></tbody>
                     </table>
                 </div>
                 
@@ -349,13 +348,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Tanggal Lahir</label>
-                             <div class="relative">
-                                <i class="fas fa-calendar-alt absolute left-4 top-3.5 text-gray-400"></i>
-                                <input type="text" id="update-tanggal-lahir" placeholder="DD/MM/YYYY" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
-                            </div>
-                        </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Asal Daerah</label>
                              <div class="relative">
@@ -363,9 +355,6 @@
                                 <input type="text" id="update-asal" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                             </div>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">No. WhatsApp</label>
                              <div class="relative">
@@ -373,6 +362,9 @@
                                 <input type="text" id="update-wa" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                             </div>
                         </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Lanjut Studi (S2/S3)</label>
                              <div class="relative">
@@ -380,9 +372,6 @@
                                 <input type="text" id="update-studi" placeholder="-" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                             </div>
                         </div>
-                    </div>
-
-                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Universitas</label>
                              <div class="relative">
@@ -390,12 +379,13 @@
                                 <input type="text" id="update-univ" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Program Studi</label>
-                             <div class="relative">
-                                <i class="fas fa-book-open absolute left-4 top-3.5 text-gray-400"></i>
-                                <input type="text" id="update-prodi" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
-                            </div>
+                    </div>
+
+                     <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Program Studi</label>
+                         <div class="relative">
+                            <i class="fas fa-book-open absolute left-4 top-3.5 text-gray-400"></i>
+                            <input type="text" id="update-prodi" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                         </div>
                     </div>
 
@@ -457,8 +447,7 @@
                 </div>
             </div>
 
-            <div class="p-4 overflow-y-auto space-y-3 bg-white flex-1" id="s2-list">
-                </div>
+            <div class="p-4 overflow-y-auto space-y-3 bg-white flex-1" id="s2-list"></div>
         </div>
     </div>
   </div>
@@ -472,15 +461,14 @@
                 <button onclick="closeS3Modal()" class="hover:bg-white/20 rounded-full p-1 w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
             </div>
 
-             <div class="p-4 border-b border-gray-100 bg-gray-50 shrink-0">
+            <div class="p-4 border-b border-gray-100 bg-gray-50 shrink-0">
                 <div class="relative">
                      <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
                      <input type="text" id="search-s3-input" placeholder="Cari nama alumni S3..." oninput="filterS3List()" class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm">
                 </div>
             </div>
 
-            <div class="p-4 overflow-y-auto space-y-3 bg-white flex-1" id="s3-list">
-                </div>
+            <div class="p-4 overflow-y-auto space-y-3 bg-white flex-1" id="s3-list"></div>
         </div>
     </div>
   </div>
@@ -576,7 +564,6 @@
     let isAdmin = false;
     let currentEditIndex = -1;
 
-    // Untuk modal search
     let currentS2Data = [];
     let currentS3Data = [];
 
@@ -649,7 +636,7 @@
     }
     loadData();
 
-    // --- PAGINATION & TABLE (Requirement #4: All columns on mobile) ---
+    // --- PAGINATION & TABLE ---
     function renderAlumniTable() {
         const tbody = document.getElementById('alumni-table-body');
         tbody.innerHTML = '';
@@ -661,7 +648,6 @@
         pageData.forEach(alumni => {
             const row = document.createElement('tr');
             row.className = 'hover:bg-blue-50/50 transition border-b border-gray-100 group';
-            // Perubahan: Menghapus hidden sm/md/lg classes agar muncul semua di mobile (dalam scroll view)
             row.innerHTML = `
             <td class="px-6 py-4 font-medium text-blue-600 group-hover:text-blue-800">${alumni['NIM'] || '-'}</td>
             <td class="px-6 py-4 font-bold text-gray-800">${alumni['NAMA'] || '-'}</td>
@@ -757,7 +743,6 @@
       if (!currentUserData) return;
       document.getElementById('update-nim').value = currentUserData['NIM'] || '';
       document.getElementById('update-nama').value = currentUserData['NAMA'] || '';
-      document.getElementById('update-tanggal-lahir').value = formatDateDisplay(currentUserData['TANGGAL LAHIR'] || '');
       document.getElementById('update-asal').value = currentUserData['ASAL DAERAH'] || '';
       document.getElementById('update-wa').value = currentUserData['NO. WHATSAPP'] || '';
       document.getElementById('update-studi').value = currentUserData['LANJUT STUDI (S2/S3)'] || '';
@@ -776,7 +761,7 @@
       formData.append('action', 'update');
       formData.append('nim', document.getElementById('update-nim').value);
       formData.append('nama', document.getElementById('update-nama').value);
-      formData.append('tanggal_lahir', document.getElementById('update-tanggal-lahir').value);
+      // Tanggal Lahir NOT sent
       formData.append('asal_daerah', document.getElementById('update-asal').value);
       formData.append('no_wa', document.getElementById('update-wa').value);
       formData.append('lanjut_studi', document.getElementById('update-studi').value);
@@ -787,7 +772,6 @@
         await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
         if(currentUserData) {
              currentUserData['NAMA'] = document.getElementById('update-nama').value;
-             // Update local
              const idx = alumniData.findIndex(a => a['NIM'] == currentUserData['NIM']);
              if (idx !== -1) { alumniData[idx] = {...currentUserData, ...Object.fromEntries(formData)}; }
         }
@@ -861,13 +845,10 @@
         finally { btn.disabled = false; txt.textContent = 'Simpan'; spin.classList.add('hidden'); }
     }
 
-    // --- MODALS S2/S3 WITH SEARCH (Requirement #3) ---
+    // --- MODALS S2/S3 WITH SEARCH ---
     function showS2Modal() {
-        // 1. Simpan data S2 ke variabel global
         currentS2Data = alumniData.filter(a => (a['LANJUT STUDI (S2/S3)']||'').includes('S2'));
-        // 2. Reset input search
         document.getElementById('search-s2-input').value = '';
-        // 3. Render full list
         renderS2List(currentS2Data);
         document.getElementById('s2-modal').classList.remove('hidden');
     }
