@@ -12,32 +12,40 @@
     body { font-family: 'Poppins', sans-serif; }
     
     /* Scrollbar Halus */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-    .stat-card { transition: all 0.3s ease; }
-    .stat-card:hover { transform: translateY(-4px); }
-    
+    /* Glass Effect */
+    .glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
     .sidebar-link {
         transition: all 0.2s ease-in-out;
         position: relative;
-        overflow: hidden;
+        border-radius: 8px;
+        margin-bottom: 4px;
     }
     
     /* Efek Active pada Menu */
     .sidebar-link.active {
         background: rgba(255, 255, 255, 0.15);
-        border-left: 4px solid #ffffff;
         color: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        font-weight: 600;
     }
     
     .sidebar-link:hover:not(.active) {
         background: rgba(255, 255, 255, 0.05);
+        transform: translateX(4px);
     }
 
-    .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
+    .modal-backdrop { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
     .animate-fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
@@ -47,292 +55,353 @@
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden flex">
+<body class="bg-gray-100 text-gray-800 h-screen overflow-hidden flex relative">
 
-  <aside id="sidebar" class="bg-gradient-to-b from-blue-700 to-indigo-800 text-white w-64 flex-shrink-0 hidden md:flex flex-col shadow-2xl transition-all duration-300 z-50 h-full absolute md:relative">
+  <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
+
+  <aside id="sidebar" class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white w-72 flex-shrink-0 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 z-50 flex flex-col shadow-2xl h-full border-r border-white/5">
     
-    <div class="p-6 flex items-center gap-3 border-b border-white/10">
-        <i class="fas fa-graduation-cap text-3xl"></i>
-        <div>
-            <h1 class="font-bold text-lg tracking-wide">SIMALSTIBA</h1>
-            <p class="text-xs text-blue-200">Dashboard Alumni</p>
+    <div class="h-20 flex items-center px-6 border-b border-white/10 bg-white/5">
+        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 shadow-lg shadow-blue-500/30">
+             <i class="fas fa-graduation-cap text-xl text-white"></i>
         </div>
-        <button onclick="toggleSidebar()" class="md:hidden ml-auto text-white/70 hover:text-white">
+        <div>
+            <h1 class="font-bold text-lg tracking-wide leading-none">SIMALSTIBA</h1>
+            <p class="text-[10px] text-blue-200 uppercase tracking-widest mt-1">Dashboard Alumni</p>
+        </div>
+        <button onclick="toggleSidebar()" class="md:hidden ml-auto text-white/70 hover:text-white transition">
             <i class="fas fa-times text-xl"></i>
         </button>
     </div>
 
-    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-2">
-        <p class="px-4 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-2">Menu Utama</p>
+    <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+        <p class="px-2 text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-2">Main Menu</p>
         
-        <button onclick="showPage('beranda')" class="nav-btn active sidebar-link w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-blue-50">
-            <i class="fas fa-home w-5"></i> <span>Beranda</span>
+        <button onclick="showPage('beranda')" class="nav-btn active sidebar-link w-full text-left px-4 py-3 flex items-center gap-3 text-sm">
+            <i class="fas fa-home w-5 text-center text-blue-300"></i> <span>Beranda</span>
         </button>
         
-        <button onclick="showPage('alumni')" class="nav-btn sidebar-link w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-blue-50">
-            <i class="fas fa-users w-5"></i> <span>Data Alumni</span>
+        <button onclick="showPage('alumni')" class="nav-btn sidebar-link w-full text-left px-4 py-3 flex items-center gap-3 text-sm">
+            <i class="fas fa-users w-5 text-center text-blue-300"></i> <span>Data Alumni</span>
         </button>
         
-        <button onclick="showPage('whatsapp')" class="nav-btn sidebar-link w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-blue-50">
-            <i class="fab fa-whatsapp w-5"></i> <span>Gabung WA</span>
+        <button onclick="showPage('whatsapp')" class="nav-btn sidebar-link w-full text-left px-4 py-3 flex items-center gap-3 text-sm">
+            <i class="fab fa-whatsapp w-5 text-center text-lg text-green-400"></i> <span>Gabung WA</span>
         </button>
 
-        <p class="px-4 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-2 mt-6">Akun & Data</p>
+        <p class="px-2 text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-2 mt-6">User Area</p>
 
-        <button onclick="showLoginOrUpdate()" id="nav-update" class="nav-btn sidebar-link w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 text-sm font-medium text-blue-50">
-            <i class="fas fa-user-edit w-5"></i> <span>Update Data</span>
+        <button onclick="showLoginOrUpdate()" id="nav-update" class="nav-btn sidebar-link w-full text-left px-4 py-3 flex items-center gap-3 text-sm">
+            <i class="fas fa-user-cog w-5 text-center text-blue-300"></i> <span>Update Data</span>
         </button>
     </nav>
 
-    <div class="p-4 bg-black/20 border-t border-white/10">
-        <div id="user-info-sidebar" class="hidden">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-lg">
-                    <i class="fas fa-user"></i>
+    <div class="bg-black/20 backdrop-blur-sm border-t border-white/10">
+        <div class="p-4">
+            <div id="user-info-sidebar" class="hidden animate-fade-in">
+                <div class="flex items-center gap-3 mb-3 bg-white/10 p-2 rounded-lg border border-white/10">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-[9px] text-blue-200 uppercase">Logged in as</p>
+                        <p id="user-display-sidebar" class="text-xs font-bold truncate max-w-[120px] text-white">User</p>
+                    </div>
                 </div>
-                <div class="overflow-hidden">
-                    <p class="text-xs text-blue-200">Login sebagai:</p>
-                    <p id="user-display-sidebar" class="text-sm font-bold truncate">User</p>
-                </div>
+                <button onclick="logout()" class="w-full py-2 bg-red-500/80 hover:bg-red-600 text-xs font-bold rounded-lg shadow transition flex items-center justify-center gap-2 text-white">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
             </div>
-            <button onclick="logout()" class="w-full py-2 bg-red-500/80 hover:bg-red-600 text-xs font-bold rounded text-white transition">
-                <i class="fas fa-sign-out-alt mr-1"></i> Keluar
-            </button>
+            
+            <div id="login-prompt-sidebar">
+                <button onclick="showLoginOrUpdate()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg text-white transition shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Login Area
+                </button>
+            </div>
         </div>
         
-        <div id="login-prompt-sidebar">
-            <button onclick="showLoginOrUpdate()" class="w-full py-2 bg-white/10 hover:bg-white/20 text-xs font-bold rounded text-white transition border border-white/30">
-                <i class="fas fa-sign-in-alt mr-1"></i> Login Sekarang
-            </button>
+        <div class="px-4 pb-4 pt-2 text-center">
+             <div class="border-t border-white/10 pt-3">
+                <p class="text-[10px] text-gray-400 font-medium">Created by</p>
+                <p class="text-[11px] text-blue-200 font-semibold tracking-wide">Bagian Pemberdayaan Alumni</p>
+             </div>
         </div>
     </div>
   </aside>
 
-  <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+  <div class="flex-1 flex flex-col h-full overflow-hidden w-full bg-gray-50">
     
-    <header class="bg-white shadow-sm md:hidden flex items-center justify-between px-4 py-3 z-40">
+    <header class="bg-white shadow-sm md:hidden h-16 flex items-center justify-between px-4 z-30 shrink-0 border-b border-gray-200">
         <div class="flex items-center gap-2">
-            <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
-            <span class="font-bold text-gray-800">Dashboard</span>
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white">
+                 <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="font-bold text-gray-800 text-lg">Dashboard</span>
         </div>
-        <button onclick="toggleSidebar()" class="text-gray-600 hover:text-blue-600 p-2">
-            <i class="fas fa-bars text-2xl"></i>
+        <button onclick="toggleSidebar()" class="text-gray-600 hover:text-blue-600 p-2 rounded-lg transition">
+            <i class="fas fa-bars text-xl"></i>
         </button>
     </header>
 
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-8">
+    <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-8 relative">
         
-        <div id="loading" class="text-center py-20">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-            <p class="mt-4 text-gray-500 font-medium">Sinkronisasi data...</p>
+        <div id="loading" class="flex flex-col items-center justify-center h-[70vh]">
+            <div class="relative">
+                <div class="w-16 h-16 border-4 border-blue-100 border-dashed rounded-full animate-spin"></div>
+                <div class="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p class="mt-5 text-gray-400 font-medium text-sm animate-pulse tracking-wide">Menghubungkan Database...</p>
         </div>
 
-        <div id="error" class="hidden bg-red-100 border border-red-300 rounded-lg p-6 text-center max-w-lg mx-auto mt-10">
-            <i class="fas fa-exclamation-triangle text-3xl text-red-500 mb-2"></i>
-            <p class="text-red-700 font-semibold">Gagal memuat data</p>
-            <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Coba Lagi</button>
+        <div id="error" class="hidden flex flex-col items-center justify-center h-[70vh] text-center">
+            <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                <i class="fas fa-wifi text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800">Koneksi Terputus</h3>
+            <p class="text-gray-500 text-sm mb-6 max-w-xs mx-auto">Gagal mengambil data dari server. Silakan periksa internet Anda.</p>
+            <button onclick="location.reload()" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold shadow-lg shadow-blue-200">
+                <i class="fas fa-sync-alt mr-2"></i> Muat Ulang
+            </button>
         </div>
 
-        <div id="page-beranda" class="hidden animate-fade-in">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">Selamat Datang 👋</h2>
-                <p class="text-gray-500 text-sm">Ringkasan data alumni terkini.</p>
+        <div id="page-beranda" class="hidden animate-fade-in pb-20">
+            <div class="mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Selamat Datang</h2>
+                <p class="text-gray-500 text-sm mt-1">Ringkasan statistik data alumni terkini.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center justify-between stat-card">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+                <div class="bg-white rounded-2xl p-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100 flex items-center justify-between stat-card group hover:-translate-y-1 transition-all duration-300">
                     <div>
-                        <p class="text-gray-400 text-xs font-bold uppercase">Total Alumni</p>
-                        <p id="stat-total" class="text-2xl font-bold text-gray-800 mt-1">0</p>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Total Alumni</p>
+                        <p id="stat-total" class="text-3xl font-bold text-gray-800">0</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
-                        <i class="fas fa-users text-lg"></i>
+                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                        <i class="fas fa-users text-xl"></i>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center justify-between stat-card">
+                <div class="bg-white rounded-2xl p-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100 flex items-center justify-between stat-card group hover:-translate-y-1 transition-all duration-300">
                     <div>
-                        <p class="text-gray-400 text-xs font-bold uppercase">Ikhwan</p>
-                        <p id="stat-male" class="text-2xl font-bold text-gray-800 mt-1">0</p>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Ikhwan</p>
+                        <p id="stat-male" class="text-3xl font-bold text-gray-800">0</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
-                        <i class="fas fa-male text-lg"></i>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
+                        <i class="fas fa-male text-2xl"></i>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center justify-between stat-card">
+                <div class="bg-white rounded-2xl p-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100 flex items-center justify-between stat-card group hover:-translate-y-1 transition-all duration-300">
                     <div>
-                        <p class="text-gray-400 text-xs font-bold uppercase">Akhwat</p>
-                        <p id="stat-female" class="text-2xl font-bold text-gray-800 mt-1">0</p>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Akhwat</p>
+                        <p id="stat-female" class="text-3xl font-bold text-gray-800">0</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center">
-                        <i class="fas fa-female text-lg"></i>
+                    <div class="w-12 h-12 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shadow-sm group-hover:bg-pink-600 group-hover:text-white transition-colors duration-300">
+                        <i class="fas fa-female text-2xl"></i>
                     </div>
                 </div>
-                 <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center justify-between stat-card">
+                 <div class="bg-white rounded-2xl p-5 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-gray-100 flex items-center justify-between stat-card group hover:-translate-y-1 transition-all duration-300">
                     <div>
-                        <p class="text-gray-400 text-xs font-bold uppercase">Lanjut Studi</p>
-                        <p id="stat-studi-total" class="text-2xl font-bold text-gray-800 mt-1">0</p>
+                        <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Lanjut Studi</p>
+                        <p id="stat-studi-total" class="text-3xl font-bold text-gray-800">0</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
-                        <i class="fas fa-university text-lg"></i>
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-sm group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                        <i class="fas fa-university text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div onclick="showS2Modal()" class="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg transition hover:shadow-xl">
-                    <div class="relative z-10">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-blue-100 text-sm font-medium mb-1">Magister</p>
-                                <h3 class="text-2xl font-bold">Program S2</h3>
-                            </div>
-                            <span id="stat-s2" class="text-3xl font-bold opacity-90">0</span>
+                <div onclick="showS2Modal()" class="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg shadow-blue-200 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <div class="flex items-center justify-between mb-6 relative z-10">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
+                             <i class="fas fa-book text-xl"></i>
                         </div>
-                        <div class="mt-8 flex items-center text-sm font-semibold group-hover:gap-2 transition-all">
-                            Lihat Data <i class="fas fa-arrow-right ml-2"></i>
-                        </div>
+                        <span class="text-[10px] font-bold bg-white text-blue-700 px-3 py-1 rounded-full uppercase tracking-wide">175</span>
                     </div>
-                    <i class="fas fa-graduation-cap absolute -bottom-4 -right-4 text-9xl text-white opacity-10 rotate-12 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold relative z-10">Data Alumni S2</h3>
+                    <p class="text-blue-100 text-sm mb-6 relative z-10 opacity-90">Daftar alumni yang melanjutkan studi S2.</p>
+                    <div class="flex items-center font-semibold text-sm group-hover:gap-3 transition-all relative z-10">
+                        Lihat Data <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
                 </div>
 
-                <div onclick="showS3Modal()" class="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg transition hover:shadow-xl">
-                    <div class="relative z-10">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-indigo-100 text-sm font-medium mb-1">Doktoral</p>
-                                <h3 class="text-2xl font-bold">Program S3</h3>
-                            </div>
-                            <span id="stat-s3" class="text-3xl font-bold opacity-90">0</span>
+                <div onclick="showS3Modal()" class="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200 hover:shadow-xl hover:scale-[1.01] transition-all duration-300">
+                     <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <div class="flex items-center justify-between mb-6 relative z-10">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
+                             <i class="fas fa-user-graduate text-xl"></i>
                         </div>
-                        <div class="mt-8 flex items-center text-sm font-semibold group-hover:gap-2 transition-all">
-                            Lihat Data <i class="fas fa-arrow-right ml-2"></i>
-                        </div>
+                        <span class="text-[10px] font-bold bg-white text-indigo-700 px-3 py-1 rounded-full uppercase tracking-wide">10</span>
                     </div>
-                    <i class="fas fa-user-graduate absolute -bottom-4 -right-4 text-9xl text-white opacity-10 rotate-12 group-hover:scale-110 transition"></i>
+                    <h3 class="text-xl font-bold relative z-10">Data Alumni S3</h3>
+                    <p class="text-indigo-100 text-sm mb-6 relative z-10 opacity-90">Daftar alumni yang melanjutkan studi S3.</p>
+                    <div class="flex items-center font-semibold text-sm group-hover:gap-3 transition-all relative z-10">
+                        Lihat Data <i class="fas fa-arrow-right ml-2"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="page-alumni" class="hidden animate-fade-in">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div id="page-alumni" class="hidden animate-fade-in pb-20">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Data Alumni</h2>
-                    <p class="text-gray-500 text-sm">Cari teman seangkatanmu di sini.</p>
+                    <h2 class="text-2xl font-bold text-gray-800">Direktori Alumni</h2>
+                    <p class="text-gray-500 text-sm mt-1">Database lengkap seluruh angkatan.</p>
                 </div>
-                <div class="relative w-full md:w-72">
-                    <input type="text" id="search-alumni" placeholder="Cari Nama / NIM..." oninput="filterAlumni()" 
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                <div class="relative w-full md:w-80 group">
+                    <input type="text" id="search-alumni" placeholder="Cari Nama atau NIM..." oninput="filterAlumni()" 
+                           class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm shadow-sm transition-all">
+                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-sm text-left whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600 font-bold border-b border-gray-200 text-xs uppercase tracking-wider">
                             <tr>
                                 <th class="px-6 py-4">NIM</th>
                                 <th class="px-6 py-4">Nama Lengkap</th>
-                                <th class="px-6 py-4 hidden sm:table-cell">Domisili</th>
-                                <th class="px-6 py-4 hidden md:table-cell">Angkatan</th>
-                                <th class="px-6 py-4 hidden lg:table-cell">Lulus</th>
+                                <th class="px-6 py-4">Domisili</th>
+                                <th class="px-6 py-4">Angkatan</th>
+                                <th class="px-6 py-4">Lulus</th>
                             </tr>
                         </thead>
-                        <tbody id="alumni-table-body" class="divide-y divide-gray-100">
+                        <tbody id="alumni-table-body" class="divide-y divide-gray-100 text-gray-700">
                             </tbody>
                     </table>
                 </div>
+                
+                <div id="pagination-controls" class="border-t border-gray-100 p-4 bg-gray-50/50 flex items-center justify-between">
+                    <button onclick="prevPage()" id="btn-prev" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 shadow-sm">
+                        <i class="fas fa-chevron-left"></i> Prev
+                    </button>
+                    
+                    <span id="page-info" class="text-xs font-bold text-gray-600 bg-white px-3 py-1 rounded border border-gray-200">Hal 1</span>
+                    
+                    <button onclick="nextPage()" id="btn-next" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2 shadow-sm">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
+             <p class="md:hidden text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-2">
+                <i class="fas fa-arrows-alt-h"></i> Geser tabel ke samping untuk melihat detail
+            </p>
         </div>
 
-        <div id="page-whatsapp" class="hidden animate-fade-in">
-             <div class="mb-6">
+        <div id="page-whatsapp" class="hidden animate-fade-in pb-20">
+             <div class="mb-8">
                 <h2 class="text-2xl font-bold text-gray-800">Komunitas WhatsApp</h2>
-                <p class="text-gray-500 text-sm">Jalin silaturahmi di grup resmi.</p>
+                <p class="text-gray-500 text-sm mt-1">Tetap terhubung melalui grup resmi.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-green-100 text-center relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
-                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-users text-2xl"></i>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-emerald-500"></div>
+                    <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-5 rotate-3 group-hover:rotate-0 transition duration-300">
+                        <i class="fas fa-male text-3xl"></i>
                     </div>
                     <h3 class="font-bold text-xl text-gray-800 mb-2">Alumni Ikhwan</h3>
-                    <p class="text-gray-500 text-sm mb-6">Grup khusus untuk alumni laki-laki.</p>
-                    <a id="wa-ikhwah-btn" href="#" target="_blank" class="inline-block w-full py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition shadow-lg shadow-green-200">
-                        <i class="fab fa-whatsapp mr-2"></i> Gabung Sekarang
+                    <p class="text-gray-500 text-sm mb-8">Grup khusus untuk alumni Laki-laki</p>
+                    <a id="wa-ikhwah-btn" href="#" target="_blank" class="flex items-center justify-center w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition shadow-lg shadow-emerald-200 gap-2">
+                        <i class="fab fa-whatsapp text-lg"></i> Gabung Grup
                     </a>
                 </div>
 
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-pink-100 text-center relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-2 bg-pink-500"></div>
-                    <div class="w-16 h-16 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-users text-2xl"></i>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-pink-500"></div>
+                    <div class="w-16 h-16 bg-pink-50 text-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-5 -rotate-3 group-hover:rotate-0 transition duration-300">
+                        <i class="fas fa-female text-3xl"></i>
                     </div>
                     <h3 class="font-bold text-xl text-gray-800 mb-2">Alumni Akhwat</h3>
-                    <p class="text-gray-500 text-sm mb-6">Grup khusus untuk alumni perempuan.</p>
-                    <a id="wa-akhwat-btn" href="#" target="_blank" class="inline-block w-full py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-semibold transition shadow-lg shadow-pink-200">
-                        <i class="fab fa-whatsapp mr-2"></i> Gabung Sekarang
+                    <p class="text-gray-500 text-sm mb-8">Grup khusus untuk alumni Perempuan</p>
+                    <a id="wa-akhwat-btn" href="#" target="_blank" class="flex items-center justify-center w-full py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-bold text-sm transition shadow-lg shadow-pink-200 gap-2">
+                        <i class="fab fa-whatsapp text-lg"></i> Gabung Grup
                     </a>
                 </div>
             </div>
         </div>
 
-        <div id="page-update" class="hidden animate-fade-in">
-            <div class="max-w-3xl mx-auto">
-                <div class="mb-6 border-b border-gray-200 pb-4">
-                    <h2 class="text-2xl font-bold text-gray-800">Edit Profil</h2>
-                    <p class="text-gray-500 text-sm">Pastikan data Anda selalu update.</p>
+        <div id="page-update" class="hidden animate-fade-in pb-20">
+            <div class="max-w-2xl mx-auto">
+                <div class="mb-8 text-center">
+                    <h2 class="text-2xl font-bold text-gray-800">Edit Profil Saya</h2>
+                    <p class="text-gray-500 text-sm mt-1">Pastikan data Anda selalu valid.</p>
                 </div>
 
-                <form id="update-form" onsubmit="saveUpdate(event)" class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200 space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">NIM</label>
-                            <input type="text" id="update-nim" readonly class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed">
+                <form id="update-form" onsubmit="saveUpdate(event)" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+                    <div class="bg-blue-50/50 p-4 rounded-xl flex items-center gap-4 border border-blue-100">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 shrink-0">
+                            <i class="fas fa-id-badge text-xl"></i>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nama Lengkap</label>
-                            <input type="text" id="update-nama" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <div class="flex-1 overflow-hidden">
+                            <label class="text-[10px] font-bold text-blue-500 uppercase tracking-wider">NIM (Read Only)</label>
+                            <input type="text" id="update-nim" readonly class="w-full bg-transparent font-bold text-gray-800 text-xl border-none p-0 focus:ring-0 truncate">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Nama Lengkap</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-4 top-3.5 text-gray-400"></i>
+                            <input type="text" id="update-nama" required class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                          <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Tanggal Lahir</label>
-                            <input type="text" id="update-tanggal-lahir" placeholder="DD/MM/YYYY" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Tanggal Lahir</label>
+                             <div class="relative">
+                                <i class="fas fa-calendar-alt absolute left-4 top-3.5 text-gray-400"></i>
+                                <input type="text" id="update-tanggal-lahir" placeholder="DD/MM/YYYY" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Asal Daerah</label>
-                            <input type="text" id="update-asal" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Asal Daerah</label>
+                             <div class="relative">
+                                <i class="fas fa-map-marker-alt absolute left-4 top-3.5 text-gray-400"></i>
+                                <input type="text" id="update-asal" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                            </div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">WhatsApp</label>
-                            <input type="text" id="update-wa" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">No. WhatsApp</label>
+                             <div class="relative">
+                                <i class="fab fa-whatsapp absolute left-4 top-3.5 text-gray-400"></i>
+                                <input type="text" id="update-wa" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Lanjut Studi (S2/S3)</label>
-                            <input type="text" id="update-studi" placeholder="-" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Lanjut Studi (S2/S3)</label>
+                             <div class="relative">
+                                <i class="fas fa-graduation-cap absolute left-4 top-3.5 text-gray-400"></i>
+                                <input type="text" id="update-studi" placeholder="-" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                            </div>
                         </div>
                     </div>
 
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Universitas</label>
-                            <input type="text" id="update-univ" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Universitas</label>
+                             <div class="relative">
+                                <i class="fas fa-university absolute left-4 top-3.5 text-gray-400"></i>
+                                <input type="text" id="update-univ" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Program Studi</label>
-                            <input type="text" id="update-prodi" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Program Studi</label>
+                             <div class="relative">
+                                <i class="fas fa-book-open absolute left-4 top-3.5 text-gray-400"></i>
+                                <input type="text" id="update-prodi" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="pt-4 flex justify-end">
-                        <button type="submit" id="update-btn" class="px-8 py-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition flex items-center shadow-lg">
-                            <span id="update-text">Simpan Data</span>
+                    <div class="pt-6">
+                        <button type="submit" id="update-btn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition flex items-center justify-center shadow-lg shadow-blue-200 gap-2">
+                            <i class="fas fa-save"></i> <span id="update-text">Simpan Perubahan</span>
                             <div id="update-spinner" class="spinner ml-3 hidden border-white border-t-transparent"></div>
                         </button>
                     </div>
@@ -340,49 +409,55 @@
             </div>
         </div>
 
-        <div id="page-admin-update" class="hidden animate-fade-in">
-             <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div id="page-admin-update" class="hidden animate-fade-in pb-20">
+             <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800">Admin Panel</h2>
-                    <p class="text-gray-500 text-sm">Kelola seluruh data alumni.</p>
+                    <p class="text-gray-500 text-sm mt-1">Kelola data seluruh alumni secara manual.</p>
                 </div>
-                 <div class="relative w-full md:w-72">
-                    <input type="text" id="search-admin-update" placeholder="Cari Nama / NIM..." oninput="filterAdminUpdate()" 
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                 <div class="relative w-full md:w-80 group">
+                    <input type="text" id="search-admin-update" placeholder="Cari Nama atau NIM..." oninput="filterAdminUpdate()" 
+                           class="w-full pl-11 pr-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm shadow-sm transition-all">
+                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-400 group-focus-within:text-blue-500"></i>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <table class="w-full text-sm text-left">
-                     <thead class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-4">NIM</th>
-                            <th class="px-6 py-4">Nama</th>
-                            <th class="px-6 py-4 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-update-table-body" class="divide-y divide-gray-100"></tbody>
-                </table>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-gray-600 font-bold border-b border-gray-200 text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">NIM</th>
+                                <th class="px-6 py-4">Nama</th>
+                                <th class="px-6 py-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-update-table-body" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
         
-        <div class="mt-12 text-center text-xs text-gray-400 pb-4">
-            &copy; 2024 SIMALSTIBA Dashboard. All rights reserved.
-        </div>
-
     </main>
   </div>
 
   <div id="s2-modal" class="hidden fixed inset-0 z-[60] overflow-y-auto">
     <div class="modal-backdrop fixed inset-0" onclick="closeS2Modal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative z-10 animate-fade-in overflow-hidden">
-            <div class="bg-blue-600 px-6 py-4 flex justify-between items-center text-white">
-                <h3 class="font-bold text-lg">🎓 Data Lanjut Studi S2</h3>
-                <button onclick="closeS2Modal()" class="hover:text-blue-200"><i class="fas fa-times text-xl"></i></button>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 animate-fade-in overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5 flex justify-between items-center text-white shrink-0">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fas fa-book"></i> Alumni S2</h3>
+                <button onclick="closeS2Modal()" class="hover:bg-white/20 rounded-full p-1 w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
             </div>
-            <div class="p-6 max-h-[60vh] overflow-y-auto space-y-3" id="s2-list">
+            
+            <div class="p-4 border-b border-gray-100 bg-gray-50 shrink-0">
+                <div class="relative">
+                     <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                     <input type="text" id="search-s2-input" placeholder="Cari nama alumni S2..." oninput="filterS2List()" class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+            </div>
+
+            <div class="p-4 overflow-y-auto space-y-3 bg-white flex-1" id="s2-list">
                 </div>
         </div>
     </div>
@@ -391,12 +466,20 @@
   <div id="s3-modal" class="hidden fixed inset-0 z-[60] overflow-y-auto">
     <div class="modal-backdrop fixed inset-0" onclick="closeS3Modal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative z-10 animate-fade-in overflow-hidden">
-            <div class="bg-indigo-600 px-6 py-4 flex justify-between items-center text-white">
-                <h3 class="font-bold text-lg">🎓 Data Lanjut Studi S3</h3>
-                <button onclick="closeS3Modal()" class="hover:text-indigo-200"><i class="fas fa-times text-xl"></i></button>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 animate-fade-in overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-5 flex justify-between items-center text-white shrink-0">
+                <h3 class="font-bold text-lg flex items-center gap-2"><i class="fas fa-user-graduate"></i> Alumni S3</h3>
+                <button onclick="closeS3Modal()" class="hover:bg-white/20 rounded-full p-1 w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
             </div>
-            <div class="p-6 max-h-[60vh] overflow-y-auto space-y-3" id="s3-list">
+
+             <div class="p-4 border-b border-gray-100 bg-gray-50 shrink-0">
+                <div class="relative">
+                     <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
+                     <input type="text" id="search-s3-input" placeholder="Cari nama alumni S3..." oninput="filterS3List()" class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+            </div>
+
+            <div class="p-4 overflow-y-auto space-y-3 bg-white flex-1" id="s3-list">
                 </div>
         </div>
     </div>
@@ -404,70 +487,72 @@
 
   <div id="login-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
     <div class="modal-backdrop fixed inset-0" onclick="closeLoginModal()"></div>
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm relative z-10 animate-fade-in p-8">
-        <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm relative z-10 animate-fade-in p-8">
+        <button onclick="closeLoginModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
         
-        <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl">
-                <i class="fas fa-lock"></i>
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-500/30">
+                <i class="fas fa-lock text-3xl"></i>
             </div>
-            <h2 class="text-xl font-bold text-gray-800">Login Alumni</h2>
-            <p class="text-sm text-gray-500">Masukkan NIM untuk akses.</p>
+            <h2 class="text-2xl font-bold text-gray-800">Login Area</h2>
+            <p class="text-sm text-gray-500 mt-1">Gunakan NIM untuk masuk.</p>
         </div>
 
-        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
             <div>
-                <label class="text-xs font-bold text-gray-500 uppercase">NIM</label>
-                <input type="text" id="login-username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mt-1">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">NIM</label>
+                <div class="relative mt-1">
+                    <i class="fas fa-user absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                    <input type="text" id="login-username" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm transition" placeholder="Nomor Induk Mahasiswa">
+                </div>
             </div>
             <div>
-                <label class="text-xs font-bold text-gray-500 uppercase">Password</label>
-                <div class="relative">
-                    <input type="password" id="login-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mt-1">
-                    <button type="button" onclick="togglePassword()" class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600">
+                <label class="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1">Password</label>
+                <div class="relative mt-1">
+                    <i class="fas fa-key absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                    <input type="password" id="login-password" class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 text-sm transition" placeholder="Sama dengan NIM">
+                    <button type="button" onclick="togglePassword()" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600">
                         <i id="password-icon" class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
-            <div id="login-error" class="hidden text-red-500 text-xs text-center font-semibold bg-red-50 p-2 rounded"></div>
+            <div id="login-error" class="hidden text-red-500 text-xs text-center font-semibold bg-red-50 p-3 rounded-xl border border-red-100 flex items-center justify-center gap-2"></div>
             
-            <button type="submit" id="login-btn" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">Masuk</button>
+            <button type="submit" id="login-btn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition shadow-lg shadow-blue-200">Masuk Dashboard</button>
         </form>
-        <p class="text-xs text-center text-gray-400 mt-4">Gunakan NIM sebagai Username & Password</p>
     </div>
   </div>
 
   <div id="edit-modal" class="hidden fixed inset-0 z-[60] overflow-y-auto">
     <div class="modal-backdrop fixed inset-0" onclick="closeEditModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative z-10 animate-fade-in">
-             <div class="bg-gray-800 px-6 py-4 flex justify-between items-center text-white rounded-t-xl">
-                <h3 class="font-bold text-lg">✏ Edit Data (Admin)</h3>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative z-10 animate-fade-in">
+             <div class="bg-gray-800 px-6 py-5 flex justify-between items-center text-white rounded-t-2xl">
+                <h3 class="font-bold text-lg"><i class="fas fa-edit mr-2"></i> Edit Data (Admin)</h3>
                 <button onclick="closeEditModal()" class="hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
             </div>
             <form id="edit-form" onsubmit="saveEdit(event)" class="p-6 space-y-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-xs font-bold text-gray-500">NIM</label><input type="text" id="edit-nim" readonly class="w-full border p-2 rounded bg-gray-100"></div>
-                    <div><label class="text-xs font-bold text-gray-500">Nama</label><input type="text" id="edit-nama" class="w-full border p-2 rounded"></div>
+                    <div><label class="text-xs font-bold text-gray-500">NIM</label><input type="text" id="edit-nim" readonly class="w-full border p-2.5 rounded-lg bg-gray-100 text-sm"></div>
+                    <div><label class="text-xs font-bold text-gray-500">Nama</label><input type="text" id="edit-nama" class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                     <div><label class="text-xs font-bold text-gray-500">Asal</label><input type="text" id="edit-asal" class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"></div>
+                     <div><label class="text-xs font-bold text-gray-500">WhatsApp</label><input type="text" id="edit-wa" class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"></div>
                 </div>
                  <div class="grid grid-cols-2 gap-4">
-                     <div><label class="text-xs font-bold text-gray-500">Asal</label><input type="text" id="edit-asal" class="w-full border p-2 rounded"></div>
-                     <div><label class="text-xs font-bold text-gray-500">WhatsApp</label><input type="text" id="edit-wa" class="w-full border p-2 rounded"></div>
+                     <div><label class="text-xs font-bold text-gray-500">Thn Masuk</label><input type="text" id="edit-masuk" readonly class="w-full border p-2.5 rounded-lg bg-gray-100 text-sm"></div>
+                     <div><label class="text-xs font-bold text-gray-500">Thn Keluar</label><input type="text" id="edit-keluar" readonly class="w-full border p-2.5 rounded-lg bg-gray-100 text-sm"></div>
                 </div>
                  <div class="grid grid-cols-2 gap-4">
-                     <div><label class="text-xs font-bold text-gray-500">Thn Masuk</label><input type="text" id="edit-masuk" readonly class="w-full border p-2 rounded bg-gray-100"></div>
-                     <div><label class="text-xs font-bold text-gray-500">Thn Keluar</label><input type="text" id="edit-keluar" readonly class="w-full border p-2 rounded bg-gray-100"></div>
+                     <div><label class="text-xs font-bold text-gray-500">Lanjut Studi</label><input type="text" id="edit-studi" class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"></div>
+                     <div><label class="text-xs font-bold text-gray-500">Universitas</label><input type="text" id="edit-univ" class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"></div>
                 </div>
-                 <div class="grid grid-cols-2 gap-4">
-                     <div><label class="text-xs font-bold text-gray-500">Lanjut Studi</label><input type="text" id="edit-studi" class="w-full border p-2 rounded"></div>
-                     <div><label class="text-xs font-bold text-gray-500">Universitas</label><input type="text" id="edit-univ" class="w-full border p-2 rounded"></div>
-                </div>
-                <div><label class="text-xs font-bold text-gray-500">Prodi</label><input type="text" id="edit-prodi" class="w-full border p-2 rounded"></div>
+                <div><label class="text-xs font-bold text-gray-500">Prodi</label><input type="text" id="edit-prodi" class="w-full border p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"></div>
                 
-                <input type="hidden" id="edit-kelamin">
-
-                <div class="flex justify-end pt-4">
-                    <button type="submit" id="save-btn" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center">
+                <div class="flex justify-end pt-6 gap-3">
+                    <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-200 transition">Batal</button>
+                    <button type="submit" id="save-btn" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center text-sm font-bold shadow-lg shadow-blue-200 transition">
                         <span id="save-text">Simpan</span>
                         <div id="save-spinner" class="spinner ml-2 hidden border-white border-t-transparent"></div>
                     </button>
@@ -485,63 +570,59 @@
     
     // --- STATE ---
     let alumniData = [];
+    let filteredData = []; 
     let currentUser = null;
     let currentUserData = null;
     let isAdmin = false;
     let currentEditIndex = -1;
 
+    // Untuk modal search
+    let currentS2Data = [];
+    let currentS3Data = [];
+
+    // --- PAGINATION ---
+    let currentPage = 1;
+    const rowsPerPage = 20;
+
     // --- UI HELPERS ---
-    
-    // Toggle Sidebar Mobile
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
-        // Toggle class 'hidden' and 'fixed inset-0 w-64' for mobile
-        if (sidebar.classList.contains('hidden')) {
-            sidebar.classList.remove('hidden');
-            sidebar.classList.add('fixed', 'inset-y-0', 'left-0');
+        const overlay = document.getElementById('mobile-overlay');
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+
+        if (isClosed) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
         } else {
-            sidebar.classList.add('hidden');
-            sidebar.classList.remove('fixed', 'inset-y-0', 'left-0');
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
         }
     }
 
     function showPage(pageName) {
-        // Hide all pages
         document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.add('hidden'));
-        
-        // Show target page
         const target = document.getElementById(`page-${pageName}`);
         if(target) target.classList.remove('hidden');
         
-        // Update sidebar active state
         document.querySelectorAll('.sidebar-link').forEach(btn => btn.classList.remove('active'));
-        
-        // Cari tombol yang memanggil fungsi ini dan set active
-        // Kita loop semua button onclick, jika mengandung pageName, set active
         const buttons = document.querySelectorAll(`button[onclick="showPage('${pageName}')"]`);
         buttons.forEach(btn => btn.classList.add('active'));
 
-        // Close sidebar on mobile after click
         if (window.innerWidth < 768) {
-            document.getElementById('sidebar').classList.add('hidden');
-            document.getElementById('sidebar').classList.remove('fixed', 'inset-y-0', 'left-0');
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('mobile-overlay').classList.add('hidden');
         }
     }
 
     function showLoginOrUpdate() {
         if (currentUser) {
-            if (isAdmin) {
-                showPage('admin-update');
-            } else {
-                showPage('update');
-            }
+            isAdmin ? showPage('admin-update') : showPage('update');
         } else {
             document.getElementById('login-modal').classList.remove('hidden');
         }
     }
 
     // --- DATA LOADING ---
-
     async function loadData() {
       try {
         const response = await fetch(APPS_SCRIPT_URL + '?action=read');
@@ -549,6 +630,7 @@
         
         if (result.status === 'success') {
           alumniData = result.data;
+          filteredData = alumniData;
           
           document.getElementById('loading').classList.add('hidden');
           document.getElementById('page-beranda').classList.remove('hidden');
@@ -565,12 +647,62 @@
         document.getElementById('error').classList.remove('hidden');
       }
     }
-    
-    // Jalankan Load Data
     loadData();
 
-    // --- LOGIC FUNCTIONS (Sama seperti sebelumnya, hanya adaptasi UI) ---
+    // --- PAGINATION & TABLE (Requirement #4: All columns on mobile) ---
+    function renderAlumniTable() {
+        const tbody = document.getElementById('alumni-table-body');
+        tbody.innerHTML = '';
 
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const pageData = filteredData.slice(startIndex, endIndex);
+
+        pageData.forEach(alumni => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-blue-50/50 transition border-b border-gray-100 group';
+            // Perubahan: Menghapus hidden sm/md/lg classes agar muncul semua di mobile (dalam scroll view)
+            row.innerHTML = `
+            <td class="px-6 py-4 font-medium text-blue-600 group-hover:text-blue-800">${alumni['NIM'] || '-'}</td>
+            <td class="px-6 py-4 font-bold text-gray-800">${alumni['NAMA'] || '-'}</td>
+            <td class="px-6 py-4 text-gray-500 text-xs">${alumni['ASAL DAERAH'] || '-'}</td>
+            <td class="px-6 py-4 text-gray-500 text-xs">${alumni['TAHUN MASUK'] || '-'}</td>
+            <td class="px-6 py-4 text-gray-500 text-xs">${alumni['TAHUN KELUAR'] || '-'}</td>
+            `;
+            tbody.appendChild(row);
+        });
+        updatePaginationControls();
+    }
+
+    function updatePaginationControls() {
+        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        const pageInfo = document.getElementById('page-info');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        pageInfo.textContent = `Hal ${currentPage} dari ${totalPages || 1}`;
+        btnPrev.disabled = currentPage === 1;
+        btnNext.disabled = currentPage === totalPages || totalPages === 0;
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        if (currentPage < totalPages) { currentPage++; renderAlumniTable(); }
+    }
+    function prevPage() {
+        if (currentPage > 1) { currentPage--; renderAlumniTable(); }
+    }
+
+    function filterAlumni() {
+        const search = document.getElementById('search-alumni').value.toLowerCase();
+        filteredData = alumniData.filter(a => 
+            ((a['NAMA'] || '').toString().toLowerCase().includes(search)) ||
+            ((a['NIM'] || '').toString().toLowerCase().includes(search))
+        );
+        currentPage = 1; renderAlumniTable();
+    }
+
+    // --- LOGIC STATS ---
     function updateStats() {
       const males = alumniData.filter(a => (a['JENIS KELAMIN'] || '').toString().toUpperCase().match(/^(L|LAKI)/)).length;
       const females = alumniData.filter(a => (a['JENIS KELAMIN'] || '').toString().toUpperCase().match(/^(P|PEREMPUAN)/)).length;
@@ -580,121 +712,47 @@
       document.getElementById('stat-male').textContent = males;
       document.getElementById('stat-female').textContent = females;
       document.getElementById('stat-total').textContent = alumniData.length;
-      document.getElementById('stat-s2').textContent = s2;
-      document.getElementById('stat-s3').textContent = s3;
       document.getElementById('stat-studi-total').textContent = s2 + s3;
     }
 
-    function renderAlumniTable() {
-      const tbody = document.getElementById('alumni-table-body');
-      tbody.innerHTML = '';
-      
-      alumniData.forEach(alumni => {
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-50 transition border-b border-gray-100';
-        row.innerHTML = `
-          <td class="px-6 py-4 font-medium text-blue-600">${alumni['NIM'] || '-'}</td>
-          <td class="px-6 py-4 font-bold text-gray-800">${alumni['NAMA'] || '-'}</td>
-          <td class="px-6 py-4 text-gray-500 hidden sm:table-cell">${alumni['ASAL DAERAH'] || '-'}</td>
-          <td class="px-6 py-4 text-gray-500 hidden md:table-cell">${alumni['TAHUN MASUK'] || '-'}</td>
-          <td class="px-6 py-4 text-gray-500 hidden lg:table-cell">${alumni['TAHUN KELUAR'] || '-'}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    function filterAlumni() {
-      const search = document.getElementById('search-alumni').value.toLowerCase();
-      const tbody = document.getElementById('alumni-table-body');
-      tbody.innerHTML = '';
-      
-      const filtered = alumniData.filter(a => 
-        ((a['NAMA'] || '').toString().toLowerCase().includes(search)) ||
-        ((a['NIM'] || '').toString().toLowerCase().includes(search))
-      );
-      
-      filtered.forEach(alumni => {
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-50 transition border-b border-gray-100';
-        row.innerHTML = `
-          <td class="px-6 py-4 font-medium text-blue-600">${alumni['NIM'] || '-'}</td>
-          <td class="px-6 py-4 font-bold text-gray-800">${alumni['NAMA'] || '-'}</td>
-          <td class="px-6 py-4 text-gray-500 hidden sm:table-cell">${alumni['ASAL DAERAH'] || '-'}</td>
-          <td class="px-6 py-4 text-gray-500 hidden md:table-cell">${alumni['TAHUN MASUK'] || '-'}</td>
-          <td class="px-6 py-4 text-gray-500 hidden lg:table-cell">${alumni['TAHUN KELUAR'] || '-'}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    // --- AUTHENTICATION ---
-
+    // --- AUTH ---
     function handleLogin(event) {
       event.preventDefault();
       const username = document.getElementById('login-username').value.trim();
       const password = document.getElementById('login-password').value.trim();
       const loginError = document.getElementById('login-error');
       
-      loginError.classList.add('hidden');
+      loginError.classList.add('hidden'); loginError.textContent = '';
       
       if (username.toLowerCase() === 'admin' && password === ADMIN_PASSWORD) {
-        isAdmin = true;
-        currentUser = 'Admin';
-        updateUserUI('Admin');
-        closeLoginModal();
-        showPage('admin-update');
+        isAdmin = true; currentUser = 'Admin';
+        updateUserUI('Admin'); closeLoginModal(); showPage('admin-update');
         return;
       }
-      
       const userData = alumniData.find(a => (a['NIM'] || '').toString().trim() === username);
+      if (!userData) { loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> NIM tidak ditemukan'; loginError.classList.remove('hidden'); return; }
+      if (username !== password) { loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password salah'; loginError.classList.remove('hidden'); return; }
       
-      if (!userData) {
-        loginError.textContent = '❌ NIM tidak ditemukan';
-        loginError.classList.remove('hidden');
-        return;
-      }
-      
-      if (username !== password) {
-        loginError.textContent = '❌ Password salah (Gunakan NIM)';
-        loginError.classList.remove('hidden');
-        return;
-      }
-      
-      currentUser = username;
-      currentUserData = userData;
-      isAdmin = false;
-      
-      updateUserUI(userData['NAMA']);
-      populateUpdateForm();
-      closeLoginModal();
-      showPage('update');
+      currentUser = username; currentUserData = userData; isAdmin = false;
+      updateUserUI(userData['NAMA']); populateUpdateForm(); closeLoginModal(); showPage('update');
     }
 
     function updateUserUI(name) {
         document.getElementById('user-display-sidebar').textContent = name;
         document.getElementById('user-info-sidebar').classList.remove('hidden');
         document.getElementById('login-prompt-sidebar').classList.add('hidden');
-        
-        // Ubah tombol di menu jadi active state jika perlu
-        const updateBtn = document.getElementById('nav-update');
-        updateBtn.innerHTML = `<i class="fas fa-user-edit w-5"></i> <span>Edit Profil Saya</span>`;
+        document.getElementById('nav-update').innerHTML = `<i class="fas fa-user-check w-5 text-center text-blue-300"></i> <span>Profil Saya</span>`;
     }
 
     function logout() {
-      currentUser = null;
-      currentUserData = null;
-      isAdmin = false;
-      
+      currentUser = null; currentUserData = null; isAdmin = false;
       document.getElementById('user-info-sidebar').classList.add('hidden');
       document.getElementById('login-prompt-sidebar').classList.remove('hidden');
-      document.getElementById('nav-update').innerHTML = `<i class="fas fa-sign-in-alt w-5"></i> <span>Login / Update</span>`;
-      
+      document.getElementById('nav-update').innerHTML = `<i class="fas fa-user-cog w-5 text-center text-blue-300"></i> <span>Update Data</span>`;
       showPage('beranda');
-      showToast('Berhasil keluar', 'success');
     }
-    
-    // --- UPDATE & EDIT LOGIC (Core functionality preserved) ---
 
+    // --- UPDATE FORM ---
     function populateUpdateForm() {
       if (!currentUserData) return;
       document.getElementById('update-nim').value = currentUserData['NIM'] || '';
@@ -712,7 +770,6 @@
       const btn = document.getElementById('update-btn');
       const text = document.getElementById('update-text');
       const spinner = document.getElementById('update-spinner');
-      
       btn.disabled = true; text.textContent = 'Menyimpan...'; spinner.classList.remove('hidden');
       
       const formData = new FormData();
@@ -728,22 +785,18 @@
       
       try {
         await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
-        // Update local data optimistically
         if(currentUserData) {
              currentUserData['NAMA'] = document.getElementById('update-nama').value;
-             currentUserData['LANJUT STUDI (S2/S3)'] = document.getElementById('update-studi').value;
-             // ... dst
+             // Update local
+             const idx = alumniData.findIndex(a => a['NIM'] == currentUserData['NIM']);
+             if (idx !== -1) { alumniData[idx] = {...currentUserData, ...Object.fromEntries(formData)}; }
         }
-        await loadData();
-        showToast('Data berhasil disimpan!', 'success');
-      } catch (e) {
-        showToast('Gagal menyimpan data', 'error');
-      } finally {
-        btn.disabled = false; text.textContent = 'Simpan Data'; spinner.classList.add('hidden');
-      }
+        await loadData(); showToast('Data berhasil disimpan!', 'success');
+      } catch (e) { showToast('Gagal menyimpan data', 'error'); } 
+      finally { btn.disabled = false; text.textContent = 'Simpan Perubahan'; spinner.classList.add('hidden'); }
     }
 
-    // --- ADMIN TABLE LOGIC ---
+    // --- ADMIN TABLE ---
     function renderAdminUpdateTable() {
         const tbody = document.getElementById('admin-update-table-body');
         tbody.innerHTML = '';
@@ -754,7 +807,9 @@
                 <td class="px-6 py-4 font-medium text-blue-600">${alumni['NIM']}</td>
                 <td class="px-6 py-4 font-bold text-gray-800">${alumni['NAMA']}</td>
                 <td class="px-6 py-4 text-right">
-                    <button onclick="openEditModal(${index})" class="text-blue-600 hover:text-blue-800 font-semibold text-xs border border-blue-200 px-3 py-1 rounded hover:bg-blue-50">Edit</button>
+                    <button onclick="openEditModal(${index})" class="text-blue-600 hover:text-blue-800 font-semibold text-xs border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition">
+                        <i class="fas fa-pen mr-1"></i> Edit
+                    </button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -770,7 +825,7 @@
         });
     }
     
-    // --- ADMIN EDIT MODAL ---
+    // --- ADMIN EDIT ---
     function openEditModal(index) {
         currentEditIndex = index;
         const d = alumniData[index];
@@ -785,13 +840,9 @@
         document.getElementById('edit-prodi').value = d['PROGRAM STUDI LANJUTAN'] || '';
         document.getElementById('edit-modal').classList.remove('hidden');
     }
-
     function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
-    
     async function saveEdit(event) {
         event.preventDefault();
-        // Logic simpan admin sama dengan saveUpdate tapi ambil value dari form edit
-        // Demi ringkasnya kode di sini, logika sama persis dengan yang sebelumnya
         const formData = new FormData();
         formData.append('action', 'update');
         formData.append('nim', document.getElementById('edit-nim').value);
@@ -802,63 +853,93 @@
         formData.append('universitas_lanjutan', document.getElementById('edit-univ').value);
         formData.append('prodi_lanjutan', document.getElementById('edit-prodi').value);
 
-        const btn = document.getElementById('save-btn');
-        const txt = document.getElementById('save-text');
-        const spin = document.getElementById('save-spinner');
-        
+        const btn = document.getElementById('save-btn'); const txt = document.getElementById('save-text'); const spin = document.getElementById('save-spinner');
         btn.disabled = true; txt.textContent = '...'; spin.classList.remove('hidden');
 
-        try {
-            await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
-            await loadData();
-            closeEditModal();
-            showToast('Data Admin berhasil disimpan', 'success');
-        } catch(e) { showToast('Gagal', 'error'); }
+        try { await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData }); await loadData(); closeEditModal(); showToast('Data Admin berhasil disimpan', 'success'); } 
+        catch(e) { showToast('Gagal', 'error'); } 
         finally { btn.disabled = false; txt.textContent = 'Simpan'; spin.classList.add('hidden'); }
     }
 
-    // --- UTILS ---
-    function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
-    function closeS2Modal() { document.getElementById('s2-modal').classList.add('hidden'); }
-    function closeS3Modal() { document.getElementById('s3-modal').classList.add('hidden'); }
-    
+    // --- MODALS S2/S3 WITH SEARCH (Requirement #3) ---
     function showS2Modal() {
-        const list = document.getElementById('s2-list'); list.innerHTML = '';
-        alumniData.filter(a => (a['LANJUT STUDI (S2/S3)']||'').includes('S2')).forEach(a => {
-            list.innerHTML += `<div class="p-4 bg-gray-50 rounded border border-gray-100">
-                <div class="font-bold text-gray-800">${a['NAMA']}</div>
-                <div class="text-xs text-gray-500">${a['UNIVERSITAS LANJUTAN']} - ${a['PROGRAM STUDI LANJUTAN']}</div>
-            </div>`;
-        });
+        // 1. Simpan data S2 ke variabel global
+        currentS2Data = alumniData.filter(a => (a['LANJUT STUDI (S2/S3)']||'').includes('S2'));
+        // 2. Reset input search
+        document.getElementById('search-s2-input').value = '';
+        // 3. Render full list
+        renderS2List(currentS2Data);
         document.getElementById('s2-modal').classList.remove('hidden');
     }
     
-    function showS3Modal() {
-        const list = document.getElementById('s3-list'); list.innerHTML = '';
-        alumniData.filter(a => (a['LANJUT STUDI (S2/S3)']||'').includes('S3')).forEach(a => {
-            list.innerHTML += `<div class="p-4 bg-gray-50 rounded border border-gray-100">
-                <div class="font-bold text-gray-800">${a['NAMA']}</div>
-                <div class="text-xs text-gray-500">${a['UNIVERSITAS LANJUTAN']} - ${a['PROGRAM STUDI LANJUTAN']}</div>
+    function filterS2List() {
+        const term = document.getElementById('search-s2-input').value.toLowerCase();
+        const filtered = currentS2Data.filter(a => a['NAMA'].toLowerCase().includes(term));
+        renderS2List(filtered);
+    }
+
+    function renderS2List(data) {
+        const list = document.getElementById('s2-list'); list.innerHTML = '';
+        if(data.length === 0) { list.innerHTML = '<p class="text-center text-gray-500 text-sm py-4">Tidak ada data ditemukan.</p>'; return; }
+        data.forEach(a => {
+            list.innerHTML += `<div class="p-4 bg-white rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition">
+                <div class="font-bold text-gray-800 text-sm flex items-center gap-2"><div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xs"><i class="fas fa-user"></i></div> ${a['NAMA']}</div>
+                <div class="ml-8 mt-1 space-y-1">
+                     <div class="text-xs text-gray-600"><i class="fas fa-university mr-1.5 text-gray-400"></i> ${a['UNIVERSITAS LANJUTAN']}</div>
+                     <div class="text-xs font-semibold text-blue-600"><i class="fas fa-book-open mr-1.5 text-blue-400"></i> ${a['PROGRAM STUDI LANJUTAN']}</div>
+                </div>
             </div>`;
         });
+    }
+    function closeS2Modal() { document.getElementById('s2-modal').classList.add('hidden'); }
+
+    // Logic S3
+    function showS3Modal() {
+        currentS3Data = alumniData.filter(a => (a['LANJUT STUDI (S2/S3)']||'').includes('S3'));
+        document.getElementById('search-s3-input').value = '';
+        renderS3List(currentS3Data);
         document.getElementById('s3-modal').classList.remove('hidden');
     }
 
-    function togglePassword() {
-        const input = document.getElementById('login-password');
-        input.type = input.type === 'password' ? 'text' : 'password';
+    function filterS3List() {
+        const term = document.getElementById('search-s3-input').value.toLowerCase();
+        const filtered = currentS3Data.filter(a => a['NAMA'].toLowerCase().includes(term));
+        renderS3List(filtered);
     }
 
+    function renderS3List(data) {
+        const list = document.getElementById('s3-list'); list.innerHTML = '';
+        if(data.length === 0) { list.innerHTML = '<p class="text-center text-gray-500 text-sm py-4">Tidak ada data ditemukan.</p>'; return; }
+        data.forEach(a => {
+            list.innerHTML += `<div class="p-4 bg-white rounded-xl border border-indigo-100 shadow-sm hover:shadow-md transition">
+                <div class="font-bold text-gray-800 text-sm flex items-center gap-2"><div class="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xs"><i class="fas fa-user-graduate"></i></div> ${a['NAMA']}</div>
+                <div class="ml-8 mt-1 space-y-1">
+                     <div class="text-xs text-gray-600"><i class="fas fa-university mr-1.5 text-gray-400"></i> ${a['UNIVERSITAS LANJUTAN']}</div>
+                     <div class="text-xs font-semibold text-indigo-600"><i class="fas fa-book-open mr-1.5 text-indigo-400"></i> ${a['PROGRAM STUDI LANJUTAN']}</div>
+                </div>
+            </div>`;
+        });
+    }
+    function closeS3Modal() { document.getElementById('s3-modal').classList.add('hidden'); }
+
+
+    // --- UTILS ---
+    function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+    function togglePassword() {
+        const input = document.getElementById('login-password');
+        const icon = document.getElementById('password-icon');
+        if (input.type === 'password') { input.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); } 
+        else { input.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+    }
     function formatDateDisplay(dateStr) {
         if(!dateStr) return '';
         if(dateStr.length === 8) return `${dateStr.substr(0,2)}/${dateStr.substr(2,2)}/${dateStr.substr(4,4)}`;
         return dateStr;
     }
-
     function showToast(msg, type) {
         const div = document.createElement('div');
-        div.className = `fixed top-5 right-5 px-6 py-4 rounded-lg text-white font-bold shadow-xl animate-fade-in z-[100] ${type==='success'?'bg-green-500':'bg-red-500'}`;
-        div.textContent = msg;
+        div.className = `fixed top-5 right-5 px-6 py-3 rounded-xl text-white font-bold shadow-xl animate-fade-in z-[100] flex items-center gap-2 ${type==='success'?'bg-emerald-500':'bg-red-500'}`;
+        div.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
         document.body.appendChild(div);
         setTimeout(() => div.remove(), 3000);
     }
