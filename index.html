@@ -375,7 +375,24 @@
                             <i class="fas fa-book-open absolute left-4 top-3.5 text-gray-400"></i>
                             <input type="text" id="update-prodi" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
                         </div>
-                    </div>
+                        </div>
+
+                    
+                        <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Pekerjaan</label>
+                         <div class="relative">
+                            <i class="fas fa-book-open absolute left-4 top-3.5 text-gray-400"></i>
+                            <input type="text" id="update-pekerjaan" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                        </div>
+                        </div>
+                        
+                        <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Domisili</label>
+                         <div class="relative">
+                            <i class="fas fa-book-open absolute left-4 top-3.5 text-gray-400"></i>
+                            <input type="text" id="update-domisili" class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all">
+                        </div>
+
 
                     <div class="pt-6">
                         <button type="submit" id="update-btn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition flex items-center justify-center shadow-lg shadow-blue-200 gap-2">
@@ -736,6 +753,8 @@
       document.getElementById('update-studi').value = currentUserData['LANJUT STUDI (S2/S3)'] || '';
       document.getElementById('update-univ').value = currentUserData['UNIVERSITAS LANJUTAN'] || '';
       document.getElementById('update-prodi').value = currentUserData['PROGRAM STUDI LANJUTAN'] || '';
+      document.getElementById('update-pekerjaan').value = currentUserData['Pekerjaan'] || '';
+      document.getElementById('update-domisili').value = currentUserData['Domisli'] || '';
     }
 
     async function saveUpdate(event) {
@@ -755,6 +774,8 @@
       formData.append('lanjut_studi', document.getElementById('update-studi').value);
       formData.append('universitas_lanjutan', document.getElementById('update-univ').value);
       formData.append('prodi_lanjutan', document.getElementById('update-prodi').value);
+      formData.append('pekerjaan', document.getElementById('update-pekerjaan').value);
+      formData.append('domisili', document.getElementById('update-domisili').value);
       
       try {
         await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
@@ -810,6 +831,8 @@
         document.getElementById('edit-studi').value = d['LANJUT STUDI (S2/S3)'] || '';
         document.getElementById('edit-univ').value = d['UNIVERSITAS LANJUTAN'] || '';
         document.getElementById('edit-prodi').value = d['PROGRAM STUDI LANJUTAN'] || '';
+        document.getElementById('edit-pekerjaan').value = d['Pekerjaan'] || '';
+        document.getElementById('edit-domisili').value = d['Domisili'] || '';
         document.getElementById('edit-modal').classList.remove('hidden');
     }
     function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
@@ -824,6 +847,9 @@
         formData.append('lanjut_studi', document.getElementById('edit-studi').value);
         formData.append('universitas_lanjutan', document.getElementById('edit-univ').value);
         formData.append('prodi_lanjutan', document.getElementById('edit-prodi').value);
+        formData.append('pekerjaan', document.getElementById('edit-pekerjaan').value);
+        formData.append('domisili', document.getElementById('edit-domisili').value);
+
 
         const btn = document.getElementById('save-btn'); const txt = document.getElementById('save-text'); const spin = document.getElementById('save-spinner');
         btn.disabled = true; txt.textContent = '...'; spin.classList.remove('hidden');
